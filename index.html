@@ -355,7 +355,7 @@
     }
     .topbar-back:hover svg { transform: translateX(-3px); filter: drop-shadow(0 0 6px var(--accent-1)); }
     .topbar-back:active { transform: translateY(1px) scale(0.95); box-shadow: 0 2px 8px rgba(124,58,237,0.2); }
-    .topbar-back.show-back { display: flex; animation: slideInBack 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+    .topbar-back.show-back { display: flex !important; animation: slideInBack 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
     @keyframes slideInBack { 0% { opacity: 0; transform: translateX(-15px) scale(0.9); } 100% { opacity: 1; transform: translateX(0) scale(1); } }
     .topbar-back svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
     
@@ -366,6 +366,40 @@
     .icon-btn:hover{background:var(--bg-card-hover);color:var(--accent-2);border-color:var(--border-accent);transform:translateY(-2px) scale(1.1);box-shadow:var(--shadow-sm);}
     .icon-btn:active{transform:scale(0.92);}
     .content-area{padding:clamp(14px,3vw,32px) clamp(12px,3.5vw,32px);flex:1;max-width:1200px;margin:0 auto;width:100%;}
+    body.has-back-btn .mobile-hamburger,
+    body.has-back-btn .topbar-brand { display: none !important; }
+    body.has-back-btn .topbar-title { display: flex !important; font-size: 16px; margin-left: 4px; }
+
+    /* Mobile sub-page back bar (shown only on mobile via media query) */
+    .mobile-subpage-bar {
+      display: none;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px 6px;
+      margin-bottom: 4px;
+    }
+    .mobile-subpage-back {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-2);
+      cursor: pointer;
+      padding: 7px 14px 7px 10px;
+      border-radius: 99px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.12), rgba(6,182,212,0.08));
+      border: 1px solid rgba(124,58,237,0.2);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.25s cubic-bezier(0.16,1,0.3,1);
+      -webkit-tap-highlight-color: transparent;
+    }
+    .mobile-subpage-back:active { transform: scale(0.94); background: rgba(124,58,237,0.2); }
+    .mobile-subpage-back svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+    @media (max-width: 767px) {
+      .mobile-subpage-bar { display: flex; }
+    }
 
     /* ===== DASHBOARD SECTIONS ===== */
     /* Compact top bar: greeting + stat pills + CTA */
@@ -729,17 +763,78 @@
       font-size: 11px !important;
       flex-shrink: 0;
     }
+    /* ── Vivid solid sign-in button — matches topbar icon-btn height ── */
     #topbar-login-btn {
-      padding: 5px 9px !important;
-      font-size: 10px !important;
+      display: none !important;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      /* Same height as icon-btns */
+      height: 32px !important;
+      padding: 0 13px !important;
+      font-size: 12px !important;
+      font-weight: 800 !important;
       white-space: nowrap;
       flex-shrink: 0;
-      display: none !important; /* hidden unless JS shows it */
+      border-radius: 99px !important;
+      /* Solid vivid fill — not translucent */
+      background: linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%) !important;
+      color: #ffffff !important;
+      border: none !important;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.4px;
+      box-shadow: 0 2px 12px rgba(124,58,237,0.55), 0 0 0 2px rgba(167,139,250,0.25) !important;
+      transition: all 0.28s cubic-bezier(0.16,1,0.3,1) !important;
+      /* Prevent mobile min-height rule from stretching it */
+      min-height: unset !important;
     }
+    /* Shine sweep on hover */
+    #topbar-login-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -70%; width: 50%; height: 100%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.55s ease;
+      pointer-events: none;
+    }
+    #topbar-login-btn:hover::before { left: 130%; }
+    #topbar-login-btn:hover {
+      transform: translateY(-2px) scale(1.05) !important;
+      box-shadow: 0 6px 22px rgba(124,58,237,0.7), 0 0 0 3px rgba(167,139,250,0.35) !important;
+    }
+    #topbar-login-btn:active {
+      transform: scale(0.93) !important;
+      box-shadow: 0 2px 8px rgba(124,58,237,0.4) !important;
+    }
+    #topbar-login-btn svg { flex-shrink: 0; }
     #topbar-login-btn[style*="flex"],
     #topbar-login-btn[style*="inline"] {
       display: flex !important;
     }
+    /* Password toggle wrapper */
+    .pw-wrap { position: relative; width: 100%; }
+    .pw-wrap .form-input { padding-right: 44px; }
+    .pw-toggle {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      padding: 4px;
+      cursor: pointer;
+      color: var(--text-muted);
+      transition: color 0.2s var(--ease);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+    .pw-toggle:hover { color: var(--accent-2); }
+    .pw-toggle svg { width: 17px; height: 17px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
     /* Mobile search btn: match other icon-btns */
     #mobile-search-btn {
       width: 32px !important;
@@ -882,6 +977,7 @@
     /* ── GENERAL MOBILE ── */
     .nav-item { min-height: 52px; }
     button, .btn-primary, .btn-outline, .filter-btn { min-height: 44px; }
+    #topbar-login-btn { min-height: unset !important; height: 32px !important; }
     input, select, textarea { min-height: 44px; font-size: 16px !important; }
     .panel-card { padding: clamp(14px,3vw,22px); overflow: hidden; box-sizing: border-box; }
     .modal-box { margin: 12px; width: calc(100% - 24px); max-width: none !important; border-radius: var(--r-lg); }
@@ -985,6 +1081,7 @@
       .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 12px; }
       
       button, .btn-primary, .btn-outline, .filter-btn { min-height: 40px; }
+      #topbar-login-btn { min-height: unset !important; height: 36px !important; padding: 0 16px !important; font-size: 13px !important; }
       input, select, textarea { min-height: 40px; font-size: 14px !important; }
       .modal-box { margin: auto; width: 90%; max-width: 480px !important; border-radius: var(--r-xl); }
       
@@ -2204,7 +2301,12 @@
           <label class="form-label" for="login-pw" style="margin-bottom:0;">Password</label>
           <div style="font-size:11px; font-weight:600; color:var(--accent-1); cursor:pointer;" onclick="showForgotPassword()">Forgot Password?</div>
         </div>
-        <input type="password" id="login-pw" class="form-input" placeholder="••••••••" value="password123" />
+        <div class="pw-wrap">
+          <input type="password" id="login-pw" class="form-input" placeholder="••••••••" value="password123" />
+          <button type="button" class="pw-toggle" onclick="togglePw('login-pw', this)" aria-label="Show/hide password">
+            <svg id="eye-login-pw-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
       </div>
       <button class="btn-primary" onclick="doLogin()" style="margin-top:6px">Sign In to Bangla Scan →</button>
     </div>
@@ -2217,7 +2319,15 @@
     <div id="signup-form" style="width:100%;display:none">
       <div class="form-group"><label class="form-label" for="reg-name">Full Name</label><input type="text" id="reg-name" class="form-input" placeholder="Alex Johnson" /></div>
       <div class="form-group"><label class="form-label" for="reg-email">Email</label><input type="email" id="reg-email" class="form-input" placeholder="you@example.com" /></div>
-      <div class="form-group"><label class="form-label" for="reg-pw">Password</label><input type="password" id="reg-pw" class="form-input" placeholder="At least 8 characters" /></div>
+      <div class="form-group">
+        <label class="form-label" for="reg-pw">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="reg-pw" class="form-input" placeholder="At least 8 characters" />
+          <button type="button" class="pw-toggle" onclick="togglePw('reg-pw', this)" aria-label="Show/hide password">
+            <svg id="eye-reg-pw-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
       <button class="btn-primary" onclick="doRegister()" style="margin-top:6px">Create My Account →</button>
     </div>
     <div class="login-divider">or continue with</div>
@@ -2345,7 +2455,10 @@
         <input type="text" placeholder="Search books, authors, genres..." oninput="handleSearch(this.value)" />
       </div>
       <div class="topbar-actions">
-        <button id="topbar-login-btn" onclick="goToLogin()" style="display:none; padding: 7px 16px; background: var(--gradient-accent); color: white; border: none; border-radius: var(--r-full); font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; white-space: nowrap; box-shadow: 0 4px 12px rgba(124,58,237,0.3);" onmouseover="this.style.transform='translateY(-2px) scale(1.02)'; this.style.boxShadow='0 8px 20px rgba(124,58,237,0.5)';" onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 4px 12px rgba(124,58,237,0.3)';">Sign Up / Log In</button>
+        <button id="topbar-login-btn" onclick="goToLogin()" style="display:none;">
+          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+          Sign In
+        </button>
         <!-- Mobile search icon button -->
         <button id="mobile-search-btn" onclick="openMobileSearch()" aria-label="Search">🔍</button>
         <div class="icon-btn tooltip-wrap" style="position:relative">🔔<div class="notification-dot"></div><div class="tooltip">Notifications</div></div>
@@ -2441,6 +2554,12 @@
 
       <!-- STATS -->
       <div class="tab-content" id="tab-stats">
+        <div class="mobile-subpage-bar">
+          <div class="mobile-subpage-back" onclick="navTo('home')">
+            <svg viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7 M4 12h16"/></svg>
+            Back
+          </div>
+        </div>
         <div class="section-title" style="font-size:22px;margin-bottom:22px">Reading Statistics 📊</div>
         <div class="stats-page-grid">
           <div class="big-stat-card"><div style="font-size:44px;margin-bottom:6px">📚</div><div style="font-size:52px;font-weight:900;color:var(--accent-2)" id="pg-stat-books">0</div><div style="font-size:14px;color:var(--text-secondary)">Total Books Read</div></div>
@@ -2476,6 +2595,12 @@
 
       <!-- WISHLIST -->
       <div class="tab-content" id="tab-wishlist">
+        <div class="mobile-subpage-bar">
+          <div class="mobile-subpage-back" onclick="navTo('home')">
+            <svg viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7 M4 12h16"/></svg>
+            Back
+          </div>
+        </div>
         <div class="section-title" style="font-size:22px;margin-bottom:22px">Wishlist ⭐</div>
         <div class="library-grid" id="wishlist-grid"></div>
       </div>
@@ -2496,6 +2621,12 @@
 
       <!-- SETTINGS -->
       <div class="tab-content" id="tab-settings">
+        <div class="mobile-subpage-bar">
+          <div class="mobile-subpage-back" onclick="navTo('home')">
+            <svg viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7 M4 12h16"/></svg>
+            Back
+          </div>
+        </div>
         <div class="section-title" style="font-size:22px;margin-bottom:22px">Settings ⚙️</div>
         <div class="settings-grid">
           <div class="settings-card">
@@ -3122,7 +3253,7 @@ function updateUI(){
   const mmmLogout = document.getElementById('mmm-logout');
   const mmmLogin = document.getElementById('mmm-login');
   if(loginBtn) {
-    loginBtn.style.display = (U?.email === 'guest@banglascan.io') ? 'block' : 'none';
+    loginBtn.style.display = (U?.email === 'guest@banglascan.io') ? 'flex' : 'none';
   }
   if(topbarAvatar) {
     topbarAvatar.style.display = (U?.email === 'guest@banglascan.io') ? 'none' : 'flex';
@@ -3216,8 +3347,13 @@ function navTo(s){
   const bottomTabs = ['home', 'library', 'explore', 'trending'];
   const backBtn = document.getElementById("topbar-back-btn");
   if(backBtn) {
-    if(bottomTabs.includes(s)) backBtn.classList.remove('show-back');
-    else backBtn.classList.add('show-back');
+    if(bottomTabs.includes(s)) {
+      backBtn.classList.remove('show-back');
+      document.body.classList.remove('has-back-btn');
+    } else {
+      backBtn.classList.add('show-back');
+      document.body.classList.add('has-back-btn');
+    }
   }
   
   closeSidebar();
@@ -4715,6 +4851,21 @@ window.addEventListener('popstate', () => {
     closeMobileSearch();
   }
 });
+
+// ===================== PASSWORD TOGGLE =====================
+function togglePw(inputId, btn) {
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const isHidden = inp.type === 'password';
+  inp.type = isHidden ? 'text' : 'password';
+  // Swap eye icon: open-eye = visible, eye-slash = hidden
+  btn.querySelector('svg').innerHTML = isHidden
+    ? /* eye-slash */
+      '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>'
+    : /* eye-open */
+      '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  btn.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+}
 </script>
 </body>
 </html>
