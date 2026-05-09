@@ -4257,6 +4257,24 @@ function admBroadcast(){
   saveAdminState();
   showToast('&#x1F4E3; '+msg);
   admLog('ok','Broadcast sent: '+msg);
+  
+  const banner = document.getElementById("dash-broadcast-banner");
+  if(banner) {
+    banner.style.display = "flex";
+    const textEl = document.getElementById("dash-broadcast-text");
+    if(textEl) textEl.textContent = msg;
+  }
+}
+function admRemoveBroadcast(){
+  const msgEl = document.getElementById('adm-broadcast-msg');
+  if(msgEl) msgEl.value = '';
+  adminSettings.broadcast = '';
+  saveAdminState();
+  showToast('&#x1F5D1; Broadcast removed');
+  admLog('ok','Broadcast removed');
+  
+  const banner = document.getElementById("dash-broadcast-banner");
+  if(banner) banner.style.display = "none";
 }
 function admToggleSetting(key, el) {
   adminSettings[key] = !adminSettings[key];
@@ -4438,7 +4456,10 @@ enter();
           <div class="adm-sett-card">
             <div class="adm-sett-card-title">Broadcast Message</div>
             <div class="adm-form-row"><label class="adm-lbl">Message for all users</label><textarea class="adm-inp" id="adm-broadcast-msg" rows="3" placeholder="Type broadcast message..."></textarea></div>
-            <button class="adm-save" onclick="admBroadcast()">&#x1F4E3; Send Broadcast</button>
+            <div style="display:flex;gap:8px">
+              <button class="adm-save" onclick="admBroadcast()">&#x1F4E3; Send Broadcast</button>
+              <button class="adm-act-btn r" style="margin-top:auto;" onclick="admRemoveBroadcast()">&#x1F5D1; Remove</button>
+            </div>
           </div>
           <div class="adm-sett-card">
             <div class="adm-sett-card-title">Data Management</div>

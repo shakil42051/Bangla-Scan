@@ -351,6 +351,201 @@ function admLog(type,msg){
   saveAdminState();
 }
 function admRenderLogs(){
+  const avatarColors=['#7c3aed','#06b6d4','#10b981','#f59e0b','#ec4899','#4f46e5','#ef4444'];
+  let rows=Object.keys(users).filter(email=>{
+    const u=users[email];
+    if(q&&!email.toLowerCase().includes(q)&&!(u.name||'').toLowerCase().includes(q))return false;
+    if(admUserFilterMode==='admin'&&email!==ADMIN_EMAIL)return false;
+    return true;
+  }).map((email,i)=>{
+    const u=users[email];
+    const isAdmin=email===ADMIN_EMAIL;
+    const color=avatarColors[i%avatarColors.length];
+    const initial=(u.name||email)[0].toUpperCase();
+    const role=isAdmin?'<span class="adm-tag purple">&#x1F6E1;&#xFE0F; Admin</span>':'<span class="adm-tag green">&#x25CF; User</span>';
+    const joinDate=u.joinDate?new Date(u.joinDate).toLocaleDateString():'Unknown';
+    return `<tr><td><div style="display:flex;align-items:center;gap:9px"><div class="adm-av" style="background:${color}">${initial}</div><div><div style="font-size:13px;font-weight:600;color:#f0f4ff">${u.name||'Unknown'}</div></div></div></td>
+    <td style="color:#4b5563">${email}</td><td>${role}</td>
+    <td class="adm-stat-number">${u.stats?.booksRead||0}</td>
+    <td class="adm-stat-number">${(u.stats?.hoursRead||0).toFixed(1)}h</td>
+    <td>${joinDate}</td>
+    <td><div style="display:flex;gap:5px">${isAdmin?'':'<button class="adm-act-btn r" onclick="admBanUser(\''+email+'\')">Ban</button>'}<button class="adm-act-btn b" onclick="admViewUser(\''+email+'\')">View</button></div></td></tr>`;
+  });
+  tbody.innerHTML=rows.length?rows.join(''):'<tr><td colspan="7" style="text-align:center;color:#374151;padding:24px">No users found.</td></tr>';
+}
+function admFilterUsers(){admRenderUsers();}
+function admUserFilter(mode,el){
+  admUserFilterMode=mode;
+  document.querySelectorAll('#adm-users .adm-filter').forEach(f=>f.classList.remove('on'));
+  el.classList.add('on');
+  admRenderUsers();
+}
+function admBanUser(email){
+  if(email===ADMIN_EMAIL){showToast('&#x26A0;&#xFE0F; Cannot ban admin!');return;}
+  openModal('Ban User','Remove this user and all their data? This cannot be undone.',()=>{
+    const users=admGetAllUsers();
+    delete users[email];
+    localStorage.setItem('Bangla Scan_users',JSON.stringify(users));
+    admLog('warn','User banned/removed: '+email);
+    admRenderUsers();
+    showToast('&#x1F6AB; User removed: '+email);
+  });
+}
+function admViewUser(email){
+  const users=admGetAllUsers();const u=users[email];if(!u)return;
+  showToast('&#x1F464; '+email+' — '+u.stats?.booksRead+' books, '+(u.stats?.hoursRead||0).toFixed(1)+'h read');
+}
+
+// ---- Books ----
+function admRenderBooks(filterVal){
+  const el=document.getElementById('adm-books-grid');if(!el)return;
+  const icons=['&#x1F31F;','&#x1F680;','&#x1F50F;','&#x1F5FA;&#xFE0F;','&#x26A1;','&#x1F3AD;'];
+  const books=(filterVal&&filterVal.length>1)?BOOKS.filter(b=>b.title.toLowerCase().includes(filterVal.toLowerCase())||b.genre===filterVal):BOOKS;
+  el.innerHTML=books.map((b,i)=>`<div class="adm-book-card">
+    <div class="adm-book-img">${icons[i%icons.length]}</div>
+    <div class="adm-book-body">
+      <div class="adm-book-name">${b.title}</div>
+      <div class="adm-book-auth">${b.author}</div>
+      <div class="adm-book-row"><span class="adm-chip">${b.genre}</span><span class="adm-chip">&#x2B50; ${b.rating||0}</span><span class="adm-chip">${b.pages}p</span></div>
+      <div class="adm-book-acts">
+        <button class="adm-act-btn b" onclick="admEditBook(${b.id})">Edit</button>
+        <button class="adm-act-btn g" onclick="admFeatureBook(${b.id})">${b.featured?'Unfeature':'Feature'}</button>
+        <button class="adm-act-btn r" onclick="admDeleteBook(${b.id})">Del</button>
+      </div>
+    </div>
+  </div>`).join('');
+}
+function admFilterBooks(val){admRenderBooks(val);}
+
+function admShowAddBook() {
+  document.getElementById('adm-book-modal-title').textContent = 'Add New Book';
+  document.getElementById('adm-book-id').value = '';
+  document.getElementById('adm-book-title').value = '';
+  document.getElementById('adm-book-author').value = '';
+  document.getElementById('adm-book-genre').value = 'Fantasy';
+  document.getElementById('adm-book-pages').value = '';
+  document.getElementById('adm-book-cover').value = '';
+  document.getElementById('adm-book-modal').classList.add('open');
+}
+
+function admEditBook(id){
+  const b=BOOKS.find(b=>b.id===id);
+  if(!b) return;
+  document.getElementById('adm-book-modal-title').textContent = 'Edit Book';
+  document.getElementById('adm-book-id').value = b.id;
+  document.getElementById('adm-book-title').value = b.title || '';
+  document.getElementById('adm-book-author').value = b.author || '';
+  document.getElementById('adm-book-genre').value = b.genre || 'Fantasy';
+  document.getElementById('adm-book-pages').value = b.pages || '';
+  document.getElementById('adm-book-cover').value = b.cover || '';
+  document.getElementById('adm-book-modal').classList.add('open');
+}
+
+function admSaveBook() {
+  const idVal = document.getElementById('adm-book-id').value;
+  const title = document.getElementById('adm-book-title').value.trim();
+  const author = document.getElementById('adm-book-author').value.trim();
+  const genre = document.getElementById('adm-book-genre').value;
+  const pages = parseInt(document.getElementById('adm-book-pages').value) || 0;
+  const cover = document.getElementById('adm-book-cover').value.trim();
+
+  if(!title || !author) { showToast('⚠️ Title and Author are required.'); return; }
+
+  if(idVal === '') {
+    // Add new
+    const newId = BOOKS.length > 0 ? Math.max(...BOOKS.map(b=>b.id)) + 1 : 1;
+    BOOKS.push({ id: newId, title, author, genre, pages, cover: cover||'data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'180\' height=\'260\'%3E%3Crect width=\'180\' height=\'260\' fill=\'%23333\'/%3E%3C/svg%3E', rating: 0, chapters: [] });
+    admLog('ok', 'Added new book: ' + title);
+    showToast('✅ Book added!');
+  } else {
+    // Edit existing
+    const id = parseInt(idVal);
+    const idx = BOOKS.findIndex(b=>b.id===id);
+    if(idx > -1) {
+      BOOKS[idx] = { ...BOOKS[idx], title, author, genre, pages };
+      if(cover) BOOKS[idx].cover = cover;
+      admLog('ok', 'Edited book: ' + title);
+      showToast('✅ Book updated!');
+    }
+  }
+  saveBooks();
+  document.getElementById('adm-book-modal').classList.remove('open');
+  admRenderBooks();
+}
+
+function admDeleteBook(id) {
+  const idx = BOOKS.findIndex(b=>b.id===id);
+  if(idx === -1) return;
+  const title = BOOKS[idx].title;
+  openModal('Delete Book', 'Are you sure you want to delete "' + title + '"? This will remove it from the library for all users.', () => {
+    BOOKS.splice(idx, 1);
+    saveBooks();
+    admLog('warn', 'Deleted book: ' + title);
+    admRenderBooks();
+    showToast('🗑️ Book deleted: ' + title);
+  });
+}
+
+function admFeatureBook(id){
+  const b=BOOKS.find(b=>b.id===id);
+  if(b){
+    b.featured = !b.featured;
+    saveBooks();
+    showToast(b.featured ? '⭐ Featured: '+b.title : 'Unfeatured: '+b.title);
+    admLog('ok', (b.featured ? 'Featured' : 'Unfeatured') + ' book: '+b.title);
+    admRenderBooks();
+  }
+}
+
+// ---- Reports ----
+function admRenderReports(){
+  const users=admGetAllUsers();
+  const keys=Object.keys(users);
+  let totalR=0,totalP=0,totalH=0,totalS=0;
+  keys.forEach(e=>{const u=users[e];totalR+=u.stats?.booksRead||0;totalP+=u.stats?.pagesRead||0;totalH+=u.stats?.hoursRead||0;totalS+=u.streak?.best||0;});
+  const el=document.getElementById('adm-report-stats');
+  if(el)el.innerHTML=`Total Users: <strong style="color:#f0f4ff">${keys.length}</strong><br>Total Books Read: <strong style="color:#f0f4ff">${totalR}</strong><br>Total Pages: <strong style="color:#f0f4ff">${totalP}</strong><br>Total Hours: <strong style="color:#f0f4ff">${totalH.toFixed(1)}</strong><br>Best Streak (sum): <strong style="color:#f59e0b">${totalS} days</strong>`;
+  const tbody=document.getElementById('adm-report-tbody');
+  if(tbody)tbody.innerHTML=keys.map(email=>{
+    const u=users[email];
+    return `<tr><td style="color:#9ca3af">${u.name||email}</td><td class="adm-stat-number">${u.stats?.booksRead||0}</td><td class="adm-stat-number">${u.stats?.pagesRead||0}</td><td class="adm-stat-number">${(u.stats?.hoursRead||0).toFixed(1)}h</td><td class="adm-stat-number">${u.streak?.best||0} days</td></tr>`;
+  }).join('');
+}
+
+function admExportReport(type){
+  const users=admGetAllUsers();const keys=Object.keys(users);
+  if(type==='csv'){
+    let csv='Name,Email,BooksRead,PagesRead,HoursRead,BestStreak\n';
+    keys.forEach(e=>{const u=users[e];csv+=`"${u.name||''}","${e}",${u.stats?.booksRead||0},${u.stats?.pagesRead||0},${(u.stats?.hoursRead||0).toFixed(1)},${u.streak?.best||0}\n`;});
+    const blob=new Blob([csv],{type:'text/csv'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Bangla Scan_report.csv';a.click();
+  } else {
+    const blob=new Blob([JSON.stringify(users,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='Bangla Scan_report.json';a.click();
+  }
+  admLog('ok','Report exported as '+type.toUpperCase());
+  showToast('&#x2705; Report exported as '+type.toUpperCase());
+}
+
+// ---- Analytics ----
+function admRenderAnalytics(){
+  admInitDashboard();
+  const el=document.getElementById('adm-top-books-chart');if(!el)return;
+  const users=admGetAllUsers();
+  const bookProgress={};
+  BOOKS.forEach(b=>{ bookProgress[b.id]={title:b.title,total:0,count:0}; });
+  Object.values(users).forEach(u=>{
+    if(u.progress)Object.keys(u.progress).forEach(id=>{if(bookProgress[id]){bookProgress[id].total+=u.progress[id];bookProgress[id].count++;}});
+  });
+  const sorted=Object.values(bookProgress).sort((a,b)=>b.total-a.total);
+  el.innerHTML=sorted.map(b=>`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:#9ca3af">${b.title}</span><span style="color:#f0f4ff;font-weight:700">${b.count} readers</span></div><div class="adm-progress"><div class="adm-progress-fill" style="width:${b.count?Math.min(100,b.total/b.count||0):0}%"></div></div></div>`).join('');
+}
+
+// ---- Logs ----
+function admLog(type,msg){
+  admLogs.unshift({type,msg,time:new Date().toLocaleTimeString()});
+  if(admLogs.length>100)admLogs.pop();
+  saveAdminState();
+}
+function admRenderLogs(){
   const el=document.getElementById('adm-logs-list');if(!el)return;
   const filtered=admCurrentFilter==='all'?admLogs:admLogs.filter(l=>l.type===admCurrentFilter);
   if(!filtered.length){el.innerHTML='<div style="color:#374151;font-size:13px;padding:20px">No logs to display.</div>';return;}
@@ -382,6 +577,24 @@ function admBroadcast(){
   saveAdminState();
   showToast('&#x1F4E3; '+msg);
   admLog('ok','Broadcast sent: '+msg);
+  
+  const banner = document.getElementById("dash-broadcast-banner");
+  if(banner) {
+    banner.style.display = "flex";
+    const textEl = document.getElementById("dash-broadcast-text");
+    if(textEl) textEl.textContent = msg;
+  }
+}
+function admRemoveBroadcast(){
+  const msgEl = document.getElementById('adm-broadcast-msg');
+  if(msgEl) msgEl.value = '';
+  adminSettings.broadcast = '';
+  saveAdminState();
+  showToast('&#x1F5D1; Broadcast removed');
+  admLog('ok','Broadcast removed');
+  
+  const banner = document.getElementById("dash-broadcast-banner");
+  if(banner) banner.style.display = "none";
 }
 function admToggleSetting(key, el) {
   adminSettings[key] = !adminSettings[key];
