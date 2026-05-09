@@ -272,6 +272,7 @@
     .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:var(--divider);}
     .btn-social{width:100%;padding:12px 24px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r-full);font-size:14px;font-weight:600;color:var(--text-primary);display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.3s var(--ease-spring);cursor:pointer;}
     .btn-social:hover{background:var(--bg-card-hover);border-color:var(--border-accent);transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+    .login-back-btn { position: absolute; top: 24px; left: 24px; z-index: 10; display: flex !important; animation: slideInBack 0.5s ease-out backwards; }
 
     /* ===== CATEGORY SHELF ===== */
     .category-shelf{margin-bottom:28px;}
@@ -912,7 +913,7 @@
     .login-stats { gap: clamp(10px, 4vw, 36px); margin-top: clamp(16px, 4vw, 40px); }
     .login-stat-num { font-size: clamp(18px, 5vw, 30px); }
     .login-form-panel { width: 100%; flex: 1; padding: clamp(24px, 6vw, 60px) clamp(20px, 5vw, 50px); border-left: none; border-top: 1px solid var(--glass-border); border-radius: var(--r-xl) var(--r-xl) 0 0; }
-    .login-form-panel > button:first-child{ display: none; } /* Hide generic back button on mobile login */
+    .login-back-btn { position: relative; top: 0; left: 0; align-self: flex-start; margin-bottom: 16px; margin-top: -10px; }
     
     /* ── MOBILE LAYOUT GRIDS ── */
     .books-grid, .library-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: clamp(10px,3vw,18px); }
@@ -2284,7 +2285,7 @@
     </div>
   </div>
   <div class="login-form-panel" style="position:relative;">
-    <button class="topbar-back" onclick="enter()" style="position:absolute; top: 24px; left: 24px; z-index: 10; display: flex; animation: slideInBack 0.5s ease-out backwards;">
+    <button class="topbar-back login-back-btn" onclick="enter()">
       <svg viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7 M4 12h16"/></svg>
       Dashboard
     </button>
@@ -3475,6 +3476,11 @@ function renderCategoryShelf() {
   const allBooks = [...BOOKS, ...WISHLIST];
   const sections = [
     {
+      id: 'latest', icon: '🆕', title: 'Latest Updates', badge: 'NEW', badgeClass: 'new',
+      books: [...allBooks].slice().reverse(),
+      getBadge: () => 'New'
+    },
+    {
       id: 'popular', icon: '🔥', title: 'Popular Right Now', badge: 'HOT', badgeClass: 'hot',
       books: [...allBooks].sort((a,b) => (b.rating||0)-(a.rating||0)),
       getBadge: b => `⭐ ${b.rating}`
@@ -3488,11 +3494,6 @@ function renderCategoryShelf() {
       id: 'recommended', icon: '💡', title: 'Recommended For You', badge: 'PICK', badgeClass: 'pick',
       books: [...allBooks].sort(() => Math.random()-0.5).slice(0,6),
       getBadge: () => '✨'
-    },
-    {
-      id: 'latest', icon: '🆕', title: 'Latest Updates', badge: 'NEW', badgeClass: 'new',
-      books: [...allBooks].slice().reverse(),
-      getBadge: () => 'New'
     }
   ];
 
@@ -4559,17 +4560,6 @@ function openSidebar() {
     if (dx < -SWIPE_THRESHOLD && document.getElementById('sidebar')?.classList.contains('open')) {
       closeSidebar(); return;
     }
-
-    // Swipe between tabs (only on mobile, not in reader)
-    const page = document.querySelector('.page.active');
-    if (!page || page.id === 'page-reader' || page.id === 'page-login' || window.innerWidth >= 768) return;
-    const activeTab = document.querySelector('.tab-content.active');
-    if (!activeTab) return;
-    const currentId = activeTab.id.replace('tab-', '');
-    const idx = tabs.indexOf(currentId);
-    if (Math.abs(dx) < SWIPE_THRESHOLD) return;
-    if (dx < 0 && idx < tabs.length - 1) navTo(tabs[idx + 1]);
-    else if (dx > 0 && idx > 0) navTo(tabs[idx - 1]);
   }, {passive: true});
 })();
 
