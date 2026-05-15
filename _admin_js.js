@@ -214,6 +214,7 @@ function admRenderBooks(filterVal){
       <div class="adm-book-row"><span class="adm-chip">${b.genre}</span><span class="adm-chip">&#x2B50; ${b.rating||0}</span><span class="adm-chip">${b.pages}p</span></div>
       <div class="adm-book-acts">
         <button class="adm-act-btn b" onclick="admEditBook(${b.id})">Edit</button>
+        <button class="adm-act-btn b" style="color:var(--accent-1);border-color:var(--accent-1);" onclick="admManageChapters(${b.id})">Chaps</button>
         <button class="adm-act-btn g" onclick="admFeatureBook(${b.id})">${b.featured?'Unfeature':'Feature'}</button>
         <button class="adm-act-btn r" onclick="admDeleteBook(${b.id})">Del</button>
       </div>
@@ -409,6 +410,7 @@ function admRenderBooks(filterVal){
       <div class="adm-book-row"><span class="adm-chip">${b.genre}</span><span class="adm-chip">&#x2B50; ${b.rating||0}</span><span class="adm-chip">${b.pages}p</span></div>
       <div class="adm-book-acts">
         <button class="adm-act-btn b" onclick="admEditBook(${b.id})">Edit</button>
+        <button class="adm-act-btn b" style="color:var(--accent-1);border-color:var(--accent-1);" onclick="admManageChapters(${b.id})">Chaps</button>
         <button class="adm-act-btn g" onclick="admFeatureBook(${b.id})">${b.featured?'Unfeature':'Feature'}</button>
         <button class="adm-act-btn r" onclick="admDeleteBook(${b.id})">Del</button>
       </div>
@@ -640,4 +642,93 @@ function admAutoCloseSidebar(e) {
   } else {
     document.querySelector('.adm-sidebar')?.classList.remove('open');
   }
+}
+
+
+// ---- Chapters Management ----
+let admCurrentBookIdForChapters = null;
+
+function admManageChapters(bookId) {
+    admCurrentBookIdForChapters = bookId;
+    const b = BOOKS.find(b => b.id === bookId);
+    if(!b) return;
+    
+    document.getElementById('adm-chapters-title').textContent = "Manage Chapters: " + b.title;
+    document.getElementById('adm-chapters-book-id').value = bookId;
+    document.getElementById('adm-chap-title').value = "Chapter " + ((b.chapters?.length || 0) + 1);
+    
+    admRenderChaptersList();
+    document.getElementById('adm-chapters-modal').classList.add('open');
+}
+
+function admRenderChaptersList() {
+    const list = document.getElementById('adm-chapters-list');
+    const b = BOOKS.find(b => b.id === admCurrentBookIdForChapters);
+    if(!b || !b.chapters || b.chapters.length === 0) {
+        list.innerHTML = "<div style='text-align:center;color:var(--text-muted);font-size:13px;'>No chapters yet.</div>";
+        return;
+    }
+    
+    list.innerHTML = b.chapters.map((ch, idx) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--r-md);">
+            <div style="font-size:13px;font-weight:600;color:var(--text-primary);">${ch.title} <span style="font-size:10px;color:var(--text-muted)">(${ch.images ? ch.images.length + ' imgs' : ch.words + ' words'})</span></div>
+            <div style="display:flex;gap:6px;">
+                <button class="adm-act-btn r" onclick="admDeleteChapter(${idx})">Del</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function admAddChapter(images = null) {
+    const b = BOOKS.find(b => b.id === admCurrentBookIdForChapters);
+    if(!b) return;
+    
+    const title = document.getElementById('adm-chap-title').value || "Chapter " + ((b.chapters?.length || 0) + 1);
+    
+    if(!b.chapters) b.chapters = [];
+    
+    const newCh = { title: title, done: false, date: new Date().toLocaleDateString() };
+    if(images) {
+        newCh.images = images;
+    } else {
+        newCh.words = 0;
+    }
+    
+    b.chapters.push(newCh);
+    saveBooks();
+    admLog('ok', `Added chapter to ${b.title}`);
+    showToast('✅ Chapter added!');
+    
+    document.getElementById('adm-chap-title').value = "Chapter " + (b.chapters.length + 1);
+    admRenderChaptersList();
+}
+
+function admDeleteChapter(idx) {
+    const b = BOOKS.find(b => b.id === admCurrentBookIdForChapters);
+    if(!b || !b.chapters) return;
+    openModal("Delete Chapter", "Delete " + b.chapters[idx].title + "?", () => {
+        b.chapters.splice(idx, 1);
+        saveBooks();
+        admRenderChaptersList();
+        showToast('🗑️ Chapter deleted');
+    });
+}
+
+function admHandleImageDrop(e) {
+    e.preventDefault();
+    const b = BOOKS.find(b => b.id === admCurrentBookIdForChapters);
+    if(!b) return;
+    
+    const files = e.dataTransfer.files;
+    if(files.length === 0) return;
+    
+    // Simulate bulk upload processing
+    showToast('⏳ Uploading ' + files.length + ' images...');
+    
+    setTimeout(() => {
+        // Mock image URLs for demo purposes
+        const images = Array.from(files).map((f, i) => "https://via.placeholder.com/800x1200/1a1a2e/c8d3e0?text=Page+" + (i+1));
+        admAddChapter(images);
+        showToast('✅ Images uploaded successfully!');
+    }, 1000);
 }

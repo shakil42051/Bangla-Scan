@@ -190,6 +190,13 @@
             <option style="background:var(--bg-elevated)" value="Thriller">Thriller</option>
             <option style="background:var(--bg-elevated)" value="Adventure">Adventure</option>
             <option style="background:var(--bg-elevated)" value="Romance">Romance</option>
+
+            <option style="background:var(--bg-elevated)" value="Manga">Manga</option>
+            <option style="background:var(--bg-elevated)" value="Manhwa">Manhwa</option>
+            <option style="background:var(--bg-elevated)" value="Manhua">Manhua</option>
+            <option style="background:var(--bg-elevated)" value="Comic">Comic</option>
+            <option style="background:var(--bg-elevated)" value="Light Novel">Light Novel</option>
+
           </select>
         </div>
         <div class="adm-form-row"><label class="adm-lbl">Pages</label><input type="number" id="adm-book-pages" class="adm-inp" placeholder="e.g. 350"></div>
@@ -200,5 +207,34 @@
         </div>
       </div>
     </div>
-  </div>
+  
+    <!-- Admin Chapters Modal -->
+    <div class="modal-overlay" id="adm-chapters-modal">
+      <div class="modal-box" style="max-width:600px;background:var(--bg-card);border:1px solid var(--border-accent);">
+        <div class="modal-title" id="adm-chapters-title" style="color:var(--text-primary)">Manage Chapters</div>
+        <div class="modal-desc" style="margin-bottom:16px">Add, edit, or remove chapters. Drag & Drop images for comics.</div>
+        <input type="hidden" id="adm-chapters-book-id" value="">
+        
+        <div style="display:flex;gap:12px;margin-bottom:16px;">
+            <input type="text" id="adm-chap-title" class="adm-inp" placeholder="Chapter Title / Number">
+            <button class="adm-save" onclick="admAddChapter()">Add Chapter</button>
+        </div>
+
+        <div id="adm-bulk-upload-zone" style="border:2px dashed var(--border-accent);border-radius:var(--r-md);padding:20px;text-align:center;color:var(--text-secondary);cursor:pointer;margin-bottom:16px;background:rgba(124,58,237,0.05);" ondrop="admHandleImageDrop(event)" ondragover="event.preventDefault()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom:8px;color:var(--accent-1);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg><br>
+            Drag & Drop Images Here<br>
+            <span style="font-size:11px;">(Bulk upload for Manga/Manhwa chapters)</span>
+        </div>
+        
+        <div id="adm-chapters-list" style="max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;">
+            <!-- Chapters go here -->
+        </div>
+
+        <div class="modal-actions" style="margin-top:24px">
+          <button class="btn-outline" style="border-color:var(--border);color:var(--text-secondary)" onclick="document.getElementById('adm-chapters-modal').classList.remove('open')">Close</button>
+        </div>
+      </div>
+    </div>
+
+</div>
 </div>
