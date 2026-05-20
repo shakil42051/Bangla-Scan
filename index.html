@@ -32,8 +32,9 @@ window.onerror = function(m, u, l, c, e) {
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-</script>
+  <link rel="stylesheet" href="icons.css" />
+  <script src="icons.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
   <style>
     :root {
       --font-ui: 'Outfit', 'Inter', sans-serif;
@@ -905,6 +906,8 @@ window.onerror = function(m, u, l, c, e) {
     
     .abn-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; padding: 8px 4px; position: relative; transition: color 0.2s var(--ease); color: var(--text-muted); font-size: 9px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; border: none; background: none; font-family: var(--font-ui); }
     .abn-item:active { transform: scale(0.88); }
+    .abn-item * { pointer-events: none; }
+    .icon-btn * { pointer-events: none; }
     .abn-icon { font-size: 20px; line-height: 1; position: relative; transition: transform 0.25s var(--ease-spring); }
     .abn-label { font-size: 9px; font-weight: 700; transition: color 0.2s var(--ease); white-space: nowrap; }
     .abn-indicator { position: absolute; top: 6px; width: 32px; height: 32px; border-radius: var(--r-md); background: rgba(124,58,237,0.12); transform: scale(0); transition: transform 0.25s var(--ease-spring), background 0.2s; }
@@ -2290,77 +2293,99 @@ window.onerror = function(m, u, l, c, e) {
 
   
     
-    /* ===== SERIES DETAIL PAGE (MANGA/MANHWA/COMIC) ===== */
+    /* ===== SERIES DETAIL PAGE & COMIC READER (PREMIUM REWORK) ===== */
     #page-series-detail { flex-direction:column; min-height:100vh; background:var(--bg-base); }
-    .series-banner { width:100%; height:clamp(200px, 30vh, 350px); position:relative; overflow:hidden; }
-    .series-banner img { width:100%; height:100%; object-fit:cover; filter:blur(4px) brightness(0.6); transform:scale(1.05); }
-    .series-banner-overlay { position:absolute; inset:0; background:linear-gradient(to top, var(--bg-base) 0%, transparent 100%); }
-    .series-content { flex:1; max-width:1200px; margin:0 auto; width:100%; padding:0 clamp(16px, 4vw, 32px); position:relative; margin-top:-clamp(60px, 15vw, 120px); z-index:10; }
-    .series-header-grid { display:flex; flex-direction:column; gap:24px; margin-bottom:32px; }
-    @media(min-width:768px) { .series-header-grid { flex-direction:row; align-items:flex-end; } }
-    .series-cover { width:clamp(140px, 25vw, 220px); aspect-ratio:2/3; border-radius:var(--r-xl); box-shadow:0 12px 40px rgba(0,0,0,0.5); border:2px solid var(--glass-border); object-fit:cover; flex-shrink:0; background:var(--bg-elevated); margin: 0 auto; }
-    @media(min-width:768px) { .series-cover { margin:0; } }
-    .series-info { flex:1; text-align:center; }
-    @media(min-width:768px) { .series-info { text-align:left; padding-bottom:12px; } }
-    .series-title { font-size:clamp(24px, 4vw, 36px); font-weight:900; line-height:1.2; margin-bottom:8px; background:var(--gradient-accent); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .series-alt-title { font-size:14px; color:var(--text-secondary); margin-bottom:12px; }
-    .series-meta { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-bottom:16px; font-size:13px; color:var(--text-muted); font-weight:600; }
+    .series-banner { width:100%; height:clamp(250px, 40vh, 450px); position:relative; overflow:hidden; display:flex; align-items:flex-end; justify-content:center; }
+    .series-banner img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; filter:blur(10px) brightness(0.4); transform:scale(1.1); transition:transform 0.8s ease; }
+    .series-banner-overlay { position:absolute; inset:0; background:linear-gradient(to top, var(--bg-base) 0%, transparent 80%); z-index:1; }
+    .series-content { flex:1; max-width:1100px; margin:0 auto; width:100%; padding:0 clamp(16px, 4vw, 32px); position:relative; margin-top:-clamp(80px, 20vw, 150px); z-index:10; }
+    .series-header-grid { display:flex; flex-direction:column; align-items:center; gap:24px; margin-bottom:40px; text-align:center; }
+    @media(min-width:768px) { .series-header-grid { flex-direction:row; align-items:flex-end; text-align:left; gap:36px; } }
+    .series-cover { width:clamp(160px, 30vw, 240px); aspect-ratio:2/3; border-radius:var(--r-xl); box-shadow:0 20px 50px rgba(0,0,0,0.6); border:2px solid rgba(255,255,255,0.1); object-fit:cover; flex-shrink:0; background:var(--bg-elevated); z-index:2; position:relative; transition:transform 0.4s var(--ease-spring); }
+    .series-cover:hover { transform:translateY(-8px); border-color:var(--accent-1); }
+    .series-info { flex:1; position:relative; z-index:2; }
+    .series-title { font-size:clamp(28px, 5vw, 44px); font-weight:900; line-height:1.1; margin-bottom:6px; background:linear-gradient(135deg, var(--text-primary), var(--accent-1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:-0.5px; }
+    .series-alt-title { font-size:15px; color:var(--text-secondary); margin-bottom:16px; font-weight:500; }
+    .series-meta { display:flex; flex-wrap:wrap; gap:16px; justify-content:center; margin-bottom:24px; font-size:14px; color:var(--text-primary); font-weight:700; }
     @media(min-width:768px) { .series-meta { justify-content:flex-start; } }
-    .series-meta-item { display:flex; align-items:center; gap:6px; }
-    .series-tags { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:20px; }
+    .series-meta-item { display:flex; align-items:center; gap:6px; background:rgba(255,255,255,0.05); padding:6px 14px; border-radius:var(--r-full); border:1px solid rgba(255,255,255,0.05); backdrop-filter:blur(10px); }
+    .series-meta-item.rating { color:#f59e0b; background:rgba(245,158,11,0.1); border-color:rgba(245,158,11,0.2); }
+    .series-tags { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:24px; }
     @media(min-width:768px) { .series-tags { justify-content:flex-start; } }
-    .series-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
-    @media(min-width:768px) { .series-actions { justify-content:flex-start; } }
-    .series-btn { padding:12px 24px; border-radius:var(--r-full); font-size:14px; font-weight:800; cursor:pointer; transition:all var(--t-fast) var(--ease-spring); display:flex; align-items:center; gap:8px; border:none; }
-    .series-btn.read { background:var(--gradient-accent); color:white; box-shadow:0 8px 24px rgba(124,58,237,0.4); }
-    .series-btn.read:hover { transform:translateY(-3px); box-shadow:0 12px 32px rgba(124,58,237,0.6); }
-    .series-btn.bookmark { background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border); }
-    .series-btn.bookmark:hover { border-color:var(--border-accent); color:var(--accent-2); transform:translateY(-2px); }
+    .series-actions { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; width:100%; }
+    @media(min-width:768px) { .series-actions { justify-content:flex-start; width:auto; } }
+    .series-btn { padding:14px 28px; border-radius:var(--r-full); font-size:15px; font-weight:800; cursor:pointer; transition:all 0.35s cubic-bezier(0.16, 1, 0.3, 1); display:flex; align-items:center; justify-content:center; gap:10px; border:none; flex:1; min-width:140px; }
+    @media(min-width:768px) { .series-btn { flex:none; } }
+    .series-btn.read { background:linear-gradient(135deg, #7c3aed, #06b6d4); color:white; box-shadow:0 8px 24px rgba(124,58,237,0.4); position:relative; overflow:hidden; }
+    .series-btn.read::before { content:''; position:absolute; top:0; left:-100%; width:50%; height:100%; background:linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent); transform:skewX(-25deg); transition:all 0.6s; }
+    .series-btn.read:hover { transform:translateY(-4px); box-shadow:0 12px 32px rgba(124,58,237,0.6); }
+    .series-btn.read:hover::before { left:200%; }
+    .series-btn.bookmark { background:var(--bg-card); color:var(--text-primary); border:1px solid var(--border); backdrop-filter:blur(24px); }
+    .series-btn.bookmark:hover { border-color:var(--border-accent); color:var(--accent-2); transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
     .series-btn.bookmark.active { background:rgba(124,58,237,0.15); color:var(--accent-1); border-color:var(--accent-1); }
-    .series-layout-grid { display:grid; grid-template-columns:1fr; gap:24px; padding-bottom:60px; }
-    @media(min-width:1024px) { .series-layout-grid { grid-template-columns:2fr 1fr; gap:40px; } }
-    .series-section { background:var(--gradient-card); border:1px solid var(--glass-border); border-radius:var(--r-xl); padding:clamp(16px, 3vw, 24px); box-shadow:var(--shadow-card); margin-bottom:24px; }
-    .series-desc { font-size:14px; line-height:1.7; color:var(--text-secondary); }
-    .chapter-list { display:flex; flex-direction:column; gap:10px; margin-top:16px; max-height:500px; overflow-y:auto; padding-right:8px; }
+    .series-layout-grid { display:grid; grid-template-columns:1fr; gap:32px; padding-bottom:80px; }
+    @media(min-width:1024px) { .series-layout-grid { grid-template-columns:1fr; max-width:800px; margin:0 auto; } }
+    .series-section { background:var(--gradient-card); border:1px solid var(--glass-border); border-radius:var(--r-xl); padding:clamp(20px, 4vw, 32px); box-shadow:0 8px 32px rgba(0,0,0,0.15); margin-bottom:24px; backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); }
+    .series-section-title { font-size:18px; font-weight:900; margin-bottom:16px; display:flex; align-items:center; gap:8px; color:var(--text-primary); }
+    .series-desc { font-size:15px; line-height:1.8; color:var(--text-secondary); }
+    .chapter-list { display:flex; flex-direction:column; gap:12px; max-height:600px; overflow-y:auto; padding-right:10px; margin-top:20px; }
     .chapter-list::-webkit-scrollbar { width:6px; }
-    .chapter-item { display:flex; justify-content:space-between; align-items:center; padding:14px 16px; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--r-md); cursor:pointer; transition:all var(--t-fast); }
-    .chapter-item:hover { border-color:var(--border-accent); transform:translateX(4px); box-shadow:var(--shadow-sm); }
-    .chapter-item.read-status { opacity:0.7; }
-    .chapter-item-left { display:flex; flex-direction:column; gap:4px; }
-    .chapter-num { font-size:14px; font-weight:800; color:var(--text-primary); }
-    .chapter-date { font-size:11px; color:var(--text-muted); }
-    .chapter-item-right { font-size:12px; color:var(--accent-2); font-weight:700; background:rgba(124,58,237,0.1); padding:4px 10px; border-radius:var(--r-full); }
-    .topbar-back-series { display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:700; font-size:14px; color:var(--text-primary); position:absolute; top:16px; left:16px; z-index:50; background:rgba(0,0,0,0.5); backdrop-filter:blur(10px); padding:8px 16px; border-radius:var(--r-full); color:white; border:1px solid rgba(255,255,255,0.2); }
-    
-    /* ===== COMIC READER PAGE ===== */
-    #page-comic-reader { min-height:100vh; background:#000; flex-direction:column; position:relative; }
-    .comic-topbar { position:fixed; top:0; left:0; right:0; height:60px; background:rgba(15,15,20,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:200; transition:transform 0.3s var(--ease); color:white; }
+    .chapter-list::-webkit-scrollbar-thumb { background:var(--border-accent); border-radius:99px; }
+    .chapter-item { display:flex; justify-content:space-between; align-items:center; padding:16px 20px; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:var(--r-lg); cursor:pointer; transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    .chapter-item:hover { border-color:var(--border-accent); transform:translateX(6px); background:rgba(124,58,237,0.08); box-shadow:0 4px 16px rgba(124,58,237,0.15); }
+    .chapter-item.read-status { opacity:0.6; }
+    .chapter-item-left { display:flex; flex-direction:column; gap:6px; }
+    .chapter-num { font-size:15px; font-weight:800; color:var(--text-primary); }
+    .chapter-date { font-size:12px; color:var(--text-muted); font-weight:600; }
+    .chapter-item-right { font-size:12px; color:var(--accent-2); font-weight:800; background:rgba(124,58,237,0.15); padding:6px 14px; border-radius:var(--r-full); border:1px solid rgba(124,58,237,0.2); transition:all 0.3s; }
+    .chapter-item:hover .chapter-item-right { background:var(--accent-1); color:white; border-color:var(--accent-1); }
+    .topbar-back-series { display:flex; align-items:center; gap:8px; cursor:pointer; font-weight:800; font-size:13px; color:white; position:absolute; top:24px; left:24px; z-index:50; background:rgba(0,0,0,0.4); backdrop-filter:blur(16px); padding:10px 20px; border-radius:var(--r-full); border:1px solid rgba(255,255,255,0.15); transition:all 0.3s; box-shadow:0 4px 16px rgba(0,0,0,0.3); }
+    .topbar-back-series:hover { background:rgba(124,58,237,0.6); border-color:var(--accent-2); transform:translateY(-2px); }
+
+    /* ===== COMIC READER PAGE ENHANCED ===== */
+    #page-comic-reader { min-height:100vh; background:#04060a; flex-direction:column; position:relative; overflow:hidden; }
+    .comic-topbar { position:fixed; top:0; left:0; right:0; height:calc(64px + env(safe-area-inset-top, 0px)); padding-top:env(safe-area-inset-top, 0px); background:rgba(4,6,10,0.75); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); border-bottom:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:space-between; padding-left:24px; padding-right:24px; z-index:200; transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); color:white; box-shadow:0 4px 30px rgba(0,0,0,0.5); }
     .comic-topbar.hidden { transform:translateY(-100%); }
-    .comic-bottombar { position:fixed; bottom:0; left:0; right:0; height:70px; background:rgba(15,15,20,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; gap:20px; padding:0 20px; z-index:200; transition:transform 0.3s var(--ease); color:white; }
+    .comic-bottombar { position:fixed; bottom:0; left:0; right:0; height:calc(80px + env(safe-area-inset-bottom, 0px)); padding-bottom:env(safe-area-inset-bottom, 0px); background:rgba(4,6,10,0.75); backdrop-filter:blur(32px) saturate(200%); -webkit-backdrop-filter:blur(32px) saturate(200%); border-top:1px solid rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; gap:24px; padding-left:24px; padding-right:24px; z-index:200; transition:transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); color:white; box-shadow:0 -4px 30px rgba(0,0,0,0.5); }
     .comic-bottombar.hidden { transform:translateY(100%); }
-    .comic-reader-title { font-size:15px; font-weight:800; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:50%; text-align:center; }
-    .comic-action-btn { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:8px; border-radius:var(--r-md); transition:all 0.2s; display:flex; align-items:center; justify-content:center; opacity:0.8; }
-    .comic-action-btn:hover { opacity:1; background:rgba(255,255,255,0.1); }
-    .comic-content { flex:1; width:100%; max-width:800px; margin:0 auto; display:flex; flex-direction:column; align-items:center; padding-top:60px; padding-bottom:70px; min-height:100vh; }
-    .comic-content.fullscreen { padding:0; max-width:100%; }
-    .comic-page { width:100%; max-width:800px; display:block; object-fit:contain; margin:0 auto; user-select:none; -webkit-user-drag:none; opacity:0; transition:opacity 0.3s ease; }
-    .comic-page.loaded { opacity:1; }
-    .comic-mode-h { flex-direction:row; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-behavior:smooth; height:100vh; padding:0; }
-    .comic-mode-h .comic-page { width:100vw; height:100vh; object-fit:contain; scroll-snap-align:center; flex-shrink:0; max-width:none; }
+    .comic-reader-title { font-size:16px; font-weight:800; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; text-align:center; flex:1; padding:0 16px; background:linear-gradient(135deg, var(--text-primary), var(--accent-1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; letter-spacing:0.2px; }
+    .comic-action-btn { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; font-size:20px; cursor:pointer; width:44px; height:44px; border-radius:14px; transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display:flex; align-items:center; justify-content:center; }
+    .comic-action-btn:hover { background:rgba(124,58,237,0.25); border-color:rgba(124,58,237,0.6); transform:translateY(-2px); box-shadow:0 4px 16px rgba(124,58,237,0.4); color:var(--accent-2); }
+    .comic-action-btn:active { transform:scale(0.92); }
+    .comic-action-btn:disabled { opacity:0.3; cursor:not-allowed; transform:none; box-shadow:none; background:rgba(255,255,255,0.05); border-color:rgba(255,255,255,0.1); color:white; }
+    .comic-content { flex:1; width:100%; max-width:900px; margin:0 auto; display:flex; flex-direction:column; align-items:center; padding-top:80px; padding-bottom:100px; min-height:100vh; overflow-y:auto; scroll-behavior:smooth; }
+    .comic-content.fullscreen { max-width:100%; padding:0; background:#000; }
+    .comic-page { width:100%; max-width:900px; display:block; object-fit:contain; margin:0 auto; user-select:none; -webkit-user-drag:none; opacity:0; transition:opacity 0.6s ease; min-height:400px; background:rgba(255,255,255,0.02); }
+    .comic-content.fullscreen .comic-page { max-width:100%; margin-bottom:0; min-height:auto; }
+    .comic-page.loaded { opacity:1; min-height:auto; background:transparent; }
+    .comic-mode-h { flex-direction:row; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-behavior:smooth; height:100vh; padding:0; max-width:100%; }
+    .comic-mode-h .comic-page { width:100vw; height:100vh; object-fit:contain; scroll-snap-align:center; flex-shrink:0; max-width:none; min-height:100vh; }
     .comic-mode-rtl { flex-direction:row-reverse; }
-    .comic-nav-btn { display:flex; align-items:center; gap:8px; padding:10px 20px; background:var(--gradient-accent); color:white; border-radius:var(--r-full); font-weight:700; border:none; cursor:pointer; }
-    .comic-nav-btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .comic-progress { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
-    .comic-settings-modal { position:fixed; bottom:80px; right:20px; width:280px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-xl); padding:20px; z-index:300; display:none; flex-direction:column; gap:16px; box-shadow:var(--shadow-lg); backdrop-filter:blur(30px); }
-    .comic-settings-modal.open { display:flex; animation:popIn 0.3s var(--ease-spring); }
+    .comic-progress-container { flex:1; max-width:400px; display:flex; flex-direction:column; gap:8px; align-items:center; }
+    .comic-progress-text { font-size:13px; font-weight:800; color:#a78bfa; font-variant-numeric:tabular-nums; letter-spacing:1px; }
+    .comic-progress-track { width:100%; height:6px; background:rgba(255,255,255,0.1); border-radius:99px; overflow:hidden; position:relative; cursor:pointer; }
+    .comic-progress-fill { height:100%; background:linear-gradient(90deg, #7c3aed, #06b6d4); width:0%; transition:width 0.25s cubic-bezier(0.4, 0, 0.2, 1); border-radius:99px; box-shadow:0 0 10px rgba(124,58,237,0.5); }
+    .comic-settings-panel { position:fixed; bottom:100px; right:24px; width:320px; background:rgba(15,18,28,0.85); border:1px solid rgba(124,58,237,0.4); border-radius:24px; padding:28px; z-index:300; display:flex; flex-direction:column; gap:24px; box-shadow:0 16px 50px rgba(0,0,0,0.6); backdrop-filter:blur(40px) saturate(200%); -webkit-backdrop-filter:blur(40px) saturate(200%); transform:translateY(120%) scale(0.9); opacity:0; transition:all 0.4s cubic-bezier(0.16, 1, 0.3, 1); pointer-events:none; }
+    .comic-settings-panel.open { transform:translateY(0) scale(1); opacity:1; pointer-events:auto; }
     .comic-setting-row { display:flex; justify-content:space-between; align-items:center; }
-    .comic-setting-label { font-size:13px; font-weight:700; color:var(--text-primary); }
-    .comic-dir-btn { padding:6px 12px; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--r-md); font-size:12px; font-weight:700; color:var(--text-secondary); cursor:pointer; }
-    .comic-dir-btn.active { background:var(--gradient-accent); color:white; border-color:transparent; }
-    .comic-tap-zone { position:fixed; top:60px; bottom:70px; width:30%; z-index:100; cursor:pointer; }
-    .comic-tap-left { left:0; }
-    .comic-tap-right { right:0; }
+    .comic-setting-label { font-size:14px; font-weight:800; color:white; }
+    .comic-dir-btn { padding:10px 16px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:14px; font-size:13px; font-weight:800; color:#aaa; cursor:pointer; transition:all 0.3s; flex:1; text-align:center; }
+    .comic-dir-btn:hover { background:rgba(255,255,255,0.1); color:white; }
+    .comic-dir-btn.active { background:linear-gradient(135deg, #7c3aed, #06b6d4); color:white; border-color:transparent; box-shadow:0 4px 16px rgba(124,58,237,0.5); }
+    .comic-dir-group { display:flex; gap:10px; width:100%; flex-wrap:wrap; }
+    .comic-tap-zone { position:fixed; top:60px; bottom:80px; z-index:100; cursor:pointer; }
+    .comic-tap-left { left:0; width:30%; }
+    .comic-tap-right { right:0; width:30%; }
     .comic-tap-center { left:30%; right:30%; width:40%; z-index:90; }
+
+    .comic-chapter-end { width:100%; padding:80px 20px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; text-align:center; position:relative; overflow:hidden; border-top:1px solid rgba(255,255,255,0.05); margin-top:40px; }
+    .comic-end-title { font-size:24px; font-weight:900; color:white; background:linear-gradient(135deg, var(--text-primary), var(--accent-1)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .comic-end-msg { font-size:14px; font-weight:600; color:#aaa; }
+    .comic-next-btn-large { padding:16px 40px; border-radius:99px; background:linear-gradient(135deg, #7c3aed, #06b6d4); color:white; font-size:16px; font-weight:900; border:none; cursor:pointer; box-shadow:0 8px 32px rgba(124,58,237,0.5); transition:all 0.3s cubic-bezier(0.16, 1, 0.3, 1); display:flex; align-items:center; gap:12px; }
+    .comic-next-btn-large:hover { transform:translateY(-4px) scale(1.02); box-shadow:0 12px 40px rgba(124,58,237,0.7); }
+    .comic-next-btn-large:active { transform:scale(0.95); }
+    .comic-skeleton { width:100%; max-width:800px; height:60vh; background:linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.03) 75%); background-size:400% 100%; animation:shimmer 2s infinite linear; border-radius:16px; margin-bottom:24px; box-shadow:inset 0 0 20px rgba(0,0,0,0.5); }
+
 
 </style>
 </head>
@@ -2371,7 +2396,7 @@ window.onerror = function(m, u, l, c, e) {
   <div class="login-art">
     <div class="login-art-bg"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
     <div class="login-art-content animate-in">
-      <div class="login-logo-big" style="cursor:pointer;" onclick="enter()">📖 Bangla Scan</div>
+      <div class="login-logo-big" style="cursor:pointer;" onclick="enter()"><bangla-icon name="logo" glow="true" size="28" style="margin-right: 8px; display: inline-flex; vertical-align: middle;"></bangla-icon> Bangla Scan</div>
       <div class="login-tagline">Your personal reading universe</div>
       <div class="login-art-series">
         <div class="art-book"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='74' height='106'%3E%3Crect width='74' height='106' fill='%231a0342'/%3E%3Ccircle cx='37' cy='44' r='19' fill='none' stroke='%237c3aed' stroke-width='2'/%3E%3Ccircle cx='37' cy='44' r='9' fill='%237c3aed' opacity='0.7'/%3E%3Cpath d='M29 36 L37 22 L45 36 L37 32Z' fill='%23f59e0b' opacity='0.9'/%3E%3Crect x='15' y='70' width='44' height='14' rx='2' fill='%23a78bfa' opacity='0.85'/%3E%3Crect x='21' y='88' width='32' height='8' rx='1' fill='%23a78bfa' opacity='0.4'/%3E%3C/svg%3E" alt="fantasy" loading="lazy" /></div>
@@ -2390,7 +2415,7 @@ window.onerror = function(m, u, l, c, e) {
       <svg viewBox="0 0 24 24"><path d="M11 19l-7-7 7-7 M4 12h16"/></svg>
       Dashboard
     </button>
-    <div class="login-form-logo" style="cursor:pointer;" onclick="enter()">📖 Bangla Scan</div>
+    <div class="login-form-logo" style="cursor:pointer;" onclick="enter()"><bangla-icon name="logo" glow="true" size="28" style="margin-right: 8px; display: inline-flex; vertical-align: middle;"></bangla-icon>Bangla Scan</div>
     <div class="login-form-sub">Welcome back — sign in to continue reading</div>
     <div class="auth-tabs">
       <div class="auth-tab active" id="tab-signin" onclick="switchAuthTab('signin')">Sign In</div>
@@ -2448,7 +2473,7 @@ window.onerror = function(m, u, l, c, e) {
     <div class="orb orb-dash-3"></div>
   </div>
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-logo" onclick="navTo('home')" style="cursor:pointer">📖 Bangla Scan</div>
+    <div class="sidebar-logo" onclick="navTo('home')" style="cursor:pointer; display: flex; align-items: center; justify-content: center; gap: 8px;"><bangla-icon name="logo" glow="true" size="24"></bangla-icon>Bangla Scan</div>
     <div class="sidebar-user">
       <div class="user-avatar" id="dash-avatar">A</div>
       <div class="user-info"><div class="user-name" id="dash-user-name">Alex Johnson</div><div class="user-tag">✨ Premium Reader</div></div>
@@ -2552,7 +2577,7 @@ window.onerror = function(m, u, l, c, e) {
         Back
       </div>
       <div class="mobile-hamburger" onclick="toggleSidebar(event)">☰</div>
-      <div class="topbar-brand" style="cursor:pointer" onclick="navTo('home')">📖 Bangla Scan</div>
+      <div class="topbar-brand" style="cursor:pointer; display: flex; align-items: center; gap: 6px;" onclick="navTo('home')"><bangla-icon name="logo" glow="true" size="20"></bangla-icon>Bangla Scan</div>
       <div class="topbar-title" id="topbar-title">Dashboard</div>
       <div class="search-bar">
         <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
@@ -2612,6 +2637,9 @@ window.onerror = function(m, u, l, c, e) {
               <div class="cat-chip" onclick="homeFilterCat('Thriller',this)">🔎 Thriller</div>
               <div class="cat-chip" onclick="homeFilterCat('Romance',this)">❤️ Romance</div>
               <div class="cat-chip" onclick="homeFilterCat('Adventure',this)">🌍 Adventure</div>
+            </div>
+            <div class="shelf-header" style="margin-top:14px; margin-bottom:8px;">
+              <div class="shelf-title">✨ Recommended for You</div>
             </div>
             <div class="shelf-scroll" id="home-library-shelf"></div>
 
@@ -2961,7 +2989,16 @@ let MANGA_SERIES=[
   {id:204,title:"Crimson Blade",author:"Kim Do-Hyun",genre:"Manhwa",status:"completed",rating:4.9,views:2100000,year:2022,description:"A legendary swordsman reincarnates into his favorite novel as a minor villain. Using his knowledge of the plot, he rewrites fate — and falls for the heroine meant for another.",tags:["Action","Romance","Reincarnation"],currentChapter:0,cover:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='260'%3E%3Crect width='180' height='260' fill='%231a0008'/%3E%3Cpath d='M90 30 L95 150 L90 160 L85 150 Z' fill='%23ef4444' opacity='0.9'/%3E%3Cellipse cx='90' cy='170' rx='20' ry='8' fill='%23ef4444' opacity='0.6'/%3E%3Cpath d='M60 70 L120 70' stroke='%23ef4444' stroke-width='3' opacity='0.7'/%3E%3Ccircle cx='90' cy='50' r='15' fill='none' stroke='%23f59e0b' stroke-width='2' opacity='0.8'/%3E%3Crect x='20' y='195' width='140' height='20' rx='4' fill='%23ef4444' opacity='0.85'/%3E%3Crect x='40' y='220' width='100' height='10' rx='2' fill='%23f59e0b' opacity='0.5'/%3E%3C/svg%3E",chapters:[{title:"Reincarnation",date:"Jan 5, 2026",done:false},{title:"The Villain's Role",date:"Dec 29, 2025",done:false},{title:"First Meeting",date:"Dec 22, 2025",done:false},{title:"Hidden Strength",date:"Dec 15, 2025",done:false},{title:"Changing Fate",date:"Dec 8, 2025",done:false},{title:"The Heroine",date:"Dec 1, 2025",done:false},{title:"Final Battle",date:"Nov 24, 2025",done:false},{title:"True Ending",date:"Nov 17, 2025",done:false}]},
   {id:205,title:"Spirit Detective",author:"Inoue Hana",genre:"Manga",status:"ongoing",rating:4.7,views:540000,year:2024,description:"A teenage girl who can see ghosts reluctantly becomes a spirit detective, solving cases between the living and the dead—while hiding her power from everyone she loves.",tags:["Supernatural","Mystery","Slice of Life"],currentChapter:0,cover:"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='260'%3E%3Crect width='180' height='260' fill='%230a0a1a'/%3E%3Ccircle cx='90' cy='80' r='40' fill='none' stroke='%23a78bfa' stroke-width='2' opacity='0.5' stroke-dasharray='6,4'/%3E%3Cellipse cx='90' cy='80' rx='22' ry='28' fill='%23a78bfa' opacity='0.2'/%3E%3Ccircle cx='82' cy='72' r='5' fill='%23a78bfa' opacity='0.9'/%3E%3Ccircle cx='98' cy='72' r='5' fill='%23a78bfa' opacity='0.9'/%3E%3Cpath d='M78 90 Q90 100 102 90' stroke='%23a78bfa' stroke-width='2' fill='none'/%3E%3Ccircle cx='55' cy='110' r='8' fill='%23a78bfa' opacity='0.3'/%3E%3Ccircle cx='130' cy='95' r='6' fill='%23ec4899' opacity='0.3'/%3E%3Crect x='20' y='195' width='140' height='20' rx='4' fill='%23a78bfa' opacity='0.85'/%3E%3Crect x='40' y='220' width='100' height='10' rx='2' fill='%23ec4899' opacity='0.5'/%3E%3C/svg%3E",chapters:[{title:"I See Dead People",date:"May 13, 2026",done:false},{title:"First Case",date:"May 6, 2026",done:false},{title:"The Haunted School",date:"Apr 29, 2026",done:false},{title:"Grudge",date:"Apr 22, 2026",done:false},{title:"Exorcism 101",date:"Apr 15, 2026",done:false},{title:"Partner in Crime",date:"Apr 8, 2026",done:false}]}
 ];
-function saveManga(){try{localStorage.setItem("bs_manga",JSON.stringify(MANGA_SERIES));}catch(e){}}
+function saveManga(){
+    try{
+        localStorage.setItem("bs_manga",JSON.stringify(MANGA_SERIES));
+    }catch(e){
+        if(e.name === 'QuotaExceededError' || e.message.includes('quota')) {
+            console.error('Storage limit reached! Cannot save more base64 images.');
+            if(typeof showToast === 'function') showToast('⚠️ Browser Storage Full! Some images may not be saved permanently.', true);
+        }
+    }
+}
 function loadManga(){try{const m=localStorage.getItem("bs_manga");if(m)MANGA_SERIES=JSON.parse(m);}catch(e){}}
 
 
@@ -3481,11 +3518,11 @@ function renderReader(){
   document.getElementById("reader-ch-title").textContent=`Chapter ${chIdx+1}: ${ch.title}`;
   document.getElementById("reader-ch-meta").textContent=`~${Math.ceil((ch.words||3000)/250)} min read · ${(ch.words||3000).toLocaleString()} words`;
   const text=CHAPTER_TEXT[seriesId]?.[chIdx];
-  document.getElementById("reader-body").innerHTML=text?text.split("\n\n").map(p=>`<p>${p.replace(/\n/g,"<br/>")}</p>`).join(""):genMock(ch.title);
+  document.getElementById("reader-body").innerHTML=text?text.split("\n\n").map(p=>`<p>${p.replace(/\n/g,"<br/>")}</p>`).join(""):genComicMock(ch.title);
   renderTOC(b);updateCNav(b);applyRFont(rFont);applyFS(fontSize);
   document.getElementById("reading-progress-fill").style.width="0%";window.scrollTo(0,0);
 }
-function genMock(title){return["The story enters a new phase here, building carefully on all that has come before. Characters face choices that will echo through the rest of the narrative.","Light filtered through half-drawn blinds in long amber stripes. The room held the particular silence that follows difficult truths—occupied rather than empty, as though the air itself needed time to settle.","She thought back through the chain of events, each link so small when she first encountered it. Only now, looking back, could she see the shape of what it had been building toward.","\"I need to know if you trust me,\" he said quietly. A simple question. The answer would determine everything that followed.","Outside, the world continued its ordinary rhythms entirely unaware. That seemed both wonderful and wrong.","The decision, when it came, arrived not with drama but with clarity—like a door that had always been there, waiting for someone to finally stop walking past it."].map(p=>`<p>${p}</p>`).join("");}
+function genComicMock(title){return [1,2,3,4].map(i=>`<img src="https://placehold.co/800x1200/1a1a2e/7c3aed?text=Comic+Page+${i}\\n${encodeURIComponent(title)}" style="width:100%; height:auto; margin-bottom:0; display:block;" alt="Comic Page ${i}" />`).join("");}
 function renderTOC(b){document.getElementById("toc-items").innerHTML=b.chapters.map((c,i)=>`<div class="toc-item ${i===chIdx?"active":""}" onclick="goToChap(${i})"><div class="toc-item-num">${i+1}</div><div class="toc-item-title">${c.title}</div>${c.done?"<div class='toc-item-done'>✓</div>":""}</div>`).join("");}
 function goToChap(i){chIdx=i;renderReader();if(window.innerWidth<900&&tocOpen)toggleToc();}
 function updateCNav(b){
@@ -3671,33 +3708,6 @@ function downloadPDF(b){
     
     /* ===== COMIC READER PAGE ===== */
     #page-comic-reader { min-height:100vh; background:#000; flex-direction:column; position:relative; }
-    .comic-topbar { position:fixed; top:0; left:0; right:0; height:60px; background:rgba(15,15,20,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-bottom:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:space-between; padding:0 20px; z-index:200; transition:transform 0.3s var(--ease); color:white; }
-    .comic-topbar.hidden { transform:translateY(-100%); }
-    .comic-bottombar { position:fixed; bottom:0; left:0; right:0; height:70px; background:rgba(15,15,20,0.85); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-top:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; gap:20px; padding:0 20px; z-index:200; transition:transform 0.3s var(--ease); color:white; }
-    .comic-bottombar.hidden { transform:translateY(100%); }
-    .comic-reader-title { font-size:15px; font-weight:800; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; max-width:50%; text-align:center; }
-    .comic-action-btn { background:none; border:none; color:white; font-size:20px; cursor:pointer; padding:8px; border-radius:var(--r-md); transition:all 0.2s; display:flex; align-items:center; justify-content:center; opacity:0.8; }
-    .comic-action-btn:hover { opacity:1; background:rgba(255,255,255,0.1); }
-    .comic-content { flex:1; width:100%; max-width:800px; margin:0 auto; display:flex; flex-direction:column; align-items:center; padding-top:60px; padding-bottom:70px; min-height:100vh; }
-    .comic-content.fullscreen { padding:0; max-width:100%; }
-    .comic-page { width:100%; max-width:800px; display:block; object-fit:contain; margin:0 auto; user-select:none; -webkit-user-drag:none; opacity:0; transition:opacity 0.3s ease; }
-    .comic-page.loaded { opacity:1; }
-    .comic-mode-h { flex-direction:row; overflow-x:auto; overflow-y:hidden; scroll-snap-type:x mandatory; scroll-behavior:smooth; height:100vh; padding:0; }
-    .comic-mode-h .comic-page { width:100vw; height:100vh; object-fit:contain; scroll-snap-align:center; flex-shrink:0; max-width:none; }
-    .comic-mode-rtl { flex-direction:row-reverse; }
-    .comic-nav-btn { display:flex; align-items:center; gap:8px; padding:10px 20px; background:var(--gradient-accent); color:white; border-radius:var(--r-full); font-weight:700; border:none; cursor:pointer; }
-    .comic-nav-btn:disabled { opacity:0.5; cursor:not-allowed; }
-    .comic-progress { font-size:13px; font-weight:700; font-variant-numeric:tabular-nums; }
-    .comic-settings-modal { position:fixed; bottom:80px; right:20px; width:280px; background:var(--bg-card); border:1px solid var(--border); border-radius:var(--r-xl); padding:20px; z-index:300; display:none; flex-direction:column; gap:16px; box-shadow:var(--shadow-lg); backdrop-filter:blur(30px); }
-    .comic-settings-modal.open { display:flex; animation:popIn 0.3s var(--ease-spring); }
-    .comic-setting-row { display:flex; justify-content:space-between; align-items:center; }
-    .comic-setting-label { font-size:13px; font-weight:700; color:var(--text-primary); }
-    .comic-dir-btn { padding:6px 12px; background:var(--bg-input); border:1px solid var(--border); border-radius:var(--r-md); font-size:12px; font-weight:700; color:var(--text-secondary); cursor:pointer; }
-    .comic-dir-btn.active { background:var(--gradient-accent); color:white; border-color:transparent; }
-    .comic-tap-zone { position:fixed; top:60px; bottom:70px; width:30%; z-index:100; cursor:pointer; }
-    .comic-tap-left { left:0; }
-    .comic-tap-right { right:0; }
-    .comic-tap-center { left:30%; right:30%; width:40%; z-index:90; }
 
 </style></head><body><h1>${b.title}</h1><div class="meta">by ${b.author} &bull; ${b.genre} &bull; ${b.pages} pages</div><div class="desc">${b.description}</div>${chs}<script>window.onload=function(){window.print();}<\/script></body></html>`);
   w.document.close();
@@ -3872,7 +3882,7 @@ document.addEventListener("keydown",e=>{
 });
 
 // ===================== ADMIN PANEL =====================
-const ADMIN_EMAIL = "admin@Bangla Scan.io";
+const ADMIN_EMAIL = "admin@banglascan.com";
 let adminPassword = "admin2024";
 let admLogs = [];
 let adminSettings = { allowReg: true, maintenance: false, downloads: true, tracking: true };
@@ -4104,6 +4114,7 @@ function admShowAddBook() {
   const vis = document.getElementById('adm-series-vis'); if(vis) vis.value = 'Public';
   
   switchStudioTab('basic');
+  if(typeof admRenderStudioChapters === 'function') admRenderStudioChapters(null);
   m.style.display = 'block';
   m.classList.add('open');
 }
@@ -4122,6 +4133,7 @@ function admEditSeries(id){
   const sl = document.getElementById('adm-series-slug'); if(sl) sl.value = (b.title||'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
   
   switchStudioTab('basic');
+  if(typeof admRenderStudioChapters === 'function') admRenderStudioChapters(id);
   m.style.display = 'block';
   m.classList.add('open');
 }
@@ -4201,7 +4213,93 @@ function simulateMediaUpload(type) {
   inp.click();
 }
 
+
+window.currentEditChapterIdx = -1;
+
+function admRenderStudioChapters(seriesId) {
+    const list = document.getElementById('studio-chapters-list');
+    if(!list) return;
+    
+    const b = MANGA_SERIES.find(x => x.id === seriesId);
+    if(!b || !b.chapters || b.chapters.length === 0) {
+        list.innerHTML = `
+          <div class="studio-card" style="text-align:center; padding:80px 0; border:2px dashed rgba(255,255,255,0.1);">
+            <div style="font-size:54px; margin-bottom:16px;">📚</div>
+            <div style="font-weight:800; font-size:18px; color:white; margin-bottom:8px;">No Chapters Yet</div>
+            <div style="font-size:14px; color:rgba(255,255,255,0.5);">Click + New Chapter to add one.</div>
+          </div>`;
+        return;
+    }
+    
+    let html = '';
+    b.chapters.forEach((ch, idx) => {
+        html += `
+        <div class="studio-card" style="display:flex; justify-content:space-between; align-items:center; padding:16px; margin-bottom:12px; cursor:pointer;" onclick="admEditChapter(${seriesId}, ${idx})">
+            <div>
+               <div style="font-weight:800; color:white; font-size:15px; margin-bottom:4px;">${ch.title}</div>
+               <div style="font-size:12px; color:rgba(255,255,255,0.5);">${ch.date} • ${ch.images ? ch.images.length : 0} Pages</div>
+            </div>
+            <div style="display:flex; gap:12px;">
+               <button class="studio-btn-ghost" style="padding:6px 12px;" onclick="event.stopPropagation(); admEditChapter(${seriesId}, ${idx})">Edit</button>
+               <button class="studio-btn-ghost" style="padding:6px 12px; color:#ef4444; border-color:#ef4444;" onclick="event.stopPropagation(); admDeleteChapter(${seriesId}, ${idx})">Del</button>
+            </div>
+        </div>`;
+    });
+    list.innerHTML = html;
+}
+
+function admEditChapter(seriesId, chIdx) {
+    const b = MANGA_SERIES.find(x => x.id === seriesId);
+    if(!b || !b.chapters || !b.chapters[chIdx]) return;
+    
+    const ch = b.chapters[chIdx];
+    document.getElementById('adm-series-id').value = seriesId;
+    window.currentEditChapterIdx = chIdx;
+    
+    const titleInp = document.getElementById('ch-title-inp');
+    const numInp = document.getElementById('ch-num-inp');
+    if(titleInp) titleInp.value = ch.title.split(' - ').slice(1).join(' - ') || ch.title;
+    if(numInp) {
+        let m = ch.title.match(/Ch\.\s*([\d\.]+)/) || ch.title.match(/Chapter\s*([\d\.]+)/);
+        numInp.value = m ? m[1] : '';
+    }
+    
+    const pagesContainer = document.getElementById('studio-chapter-pages');
+    const hdr = document.getElementById('ch-pages-header');
+    const dropzone = document.getElementById('ch-dropzone');
+    const countEl = document.getElementById('ch-pages-count');
+    
+    if(pagesContainer && ch.images && ch.images.length > 0) {
+        pagesContainer.innerHTML = '';
+        ch.images.forEach((src, index) => {
+            pagesContainer.innerHTML += `<div class="page-card" draggable="true" ondragstart="this.style.opacity='0.4'" ondragend="this.style.opacity='1'"><img src="${src}" /><div class="page-num">${index+1}</div><div class="page-del" onclick="this.parentElement.remove(); document.getElementById('ch-pages-count').textContent = parseInt(document.getElementById('ch-pages-count').textContent)-1;">✕</div></div>`;
+        });
+        if(countEl) countEl.textContent = ch.images.length;
+        pagesContainer.style.display = 'flex';
+        hdr.style.display = 'flex';
+        dropzone.style.display = 'none';
+    } else {
+        if(pagesContainer) { pagesContainer.style.display = 'none'; pagesContainer.innerHTML = ''; }
+        if(hdr) hdr.style.display = 'none';
+        if(dropzone) dropzone.style.display = 'block';
+        if(countEl) countEl.textContent = '0';
+    }
+    
+    const ov = document.getElementById('studio-chapter-overlay');
+    if(ov) ov.style.display = 'block';
+}
+
+function admDeleteChapter(seriesId, chIdx) {
+    if(!confirm("Are you sure you want to delete this chapter?")) return;
+    const b = MANGA_SERIES.find(x => x.id === seriesId);
+    if(!b || !b.chapters) return;
+    b.chapters.splice(chIdx, 1);
+    saveManga();
+    admRenderStudioChapters(seriesId);
+}
+
 function studioOpenNewChapter() {
+  window.currentEditChapterIdx = -1;
   const ov = document.getElementById('studio-chapter-overlay');
   if(ov) ov.style.display = 'block';
 }
@@ -4257,12 +4355,74 @@ function simulateImagesUpload() {
 }
 
 function finishChapterUpload() {
-  showToast('✅ Chapter published successfully!');
+  const seriesIdVal = document.getElementById('adm-series-id')?.value;
+  if(!seriesIdVal) {
+     showToast('⚠️ Please save the series first before publishing chapters!');
+     return;
+  }
+  
+  const seriesId = parseInt(seriesIdVal);
+  const series = MANGA_SERIES.find(b => b.id === seriesId);
+  if(!series) {
+     showToast('⚠️ Series not found!');
+     return;
+  }
+
+  const pagesContainer = document.getElementById('studio-chapter-pages');
+  const images = [];
+  if (pagesContainer) {
+      const imgs = pagesContainer.querySelectorAll('img');
+      imgs.forEach(img => images.push(img.src));
+  }
+  if(images.length === 0) {
+      showToast('⚠️ Please upload at least one page!');
+      return;
+  }
+
+  const titleInput = document.getElementById('ch-title-inp');
+  const numInput = document.getElementById('ch-num-inp');
+  
+  let chapterTitle = titleInput && titleInput.value ? titleInput.value.trim() : '';
+  let chapterNum = numInput && numInput.value ? numInput.value.trim() : '';
+  
+  let finalTitle = chapterTitle;
+  if(!finalTitle) {
+      finalTitle = chapterNum ? "Chapter " + chapterNum : "Chapter " + (series.chapters ? series.chapters.length + 1 : 1);
+  } else if (chapterNum) {
+      finalTitle = "Ch. " + chapterNum + " - " + chapterTitle;
+  }
+
+  if(!series.chapters) series.chapters = [];
+
+  if (window.currentEditChapterIdx > -1 && series.chapters[window.currentEditChapterIdx]) {
+      series.chapters[window.currentEditChapterIdx].title = finalTitle;
+      series.chapters[window.currentEditChapterIdx].images = images;
+      showToast('✅ Chapter updated successfully!');
+  } else {
+      const newChapter = {
+          title: finalTitle,
+          date: new Date().toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}),
+          done: false,
+          images: images
+      };
+      series.chapters.unshift(newChapter);
+      showToast('✅ Chapter published successfully!');
+  }
+  
+  saveManga();
   document.getElementById('studio-chapter-overlay').style.display = 'none';
+  
   // Reset for next
   document.getElementById('ch-dropzone').style.display = 'block';
-  document.getElementById('studio-chapter-pages').style.display = 'none';
-  document.getElementById('ch-pages-header').style.display = 'none';
+  if(pagesContainer) { pagesContainer.style.display = 'none'; pagesContainer.innerHTML = ''; }
+  const hdr = document.getElementById('ch-pages-header');
+  if(hdr) hdr.style.display = 'none';
+  if(titleInput) titleInput.value = '';
+  if(numInput) numInput.value = '';
+  window.currentEditChapterIdx = -1;
+  
+  admRenderSeries();
+  if(typeof admRenderStudioChapters === 'function') admRenderStudioChapters(seriesId);
 }
 
 function admDeleteSeries(id) {
@@ -4513,7 +4673,7 @@ function admRenderHomeBuilder() {
   if (!el) return;
   // Populate hero series select
   const heroSel = document.getElementById('hero-featured-sel');
-  if (heroSel) heroSel.innerHTML = MANGA_SERIES.map(s => `<option value="${s.id}">${s.title}</option>`).join('');
+  if (heroSel) heroSel.innerHTML = (typeof MANGA_SERIES !== 'undefined' && MANGA_SERIES ? MANGA_SERIES : []).map(s => `<option value="${s._id || s.id}">${s.title}</option>`).join('');
 
   el.innerHTML = homeSections.map((sec, i) => `
     <div draggable="true" data-idx="${i}" ondragstart="admDragStart(event)" ondragover="admDragOver(event)" ondrop="admDrop(event)"
@@ -4855,7 +5015,7 @@ function __deletedReader(seriesId_,chIdx_){
   const hEl=document.getElementById('reader-ch-title');if(hEl)hEl.textContent=ch?ch.title:'';
   const mEl=document.getElementById('reader-ch-meta');if(mEl)mEl.textContent=ch?`~${Math.ceil((ch.words||3000)/250)} min read`:'';
   const txt=CHAPTER_TEXT[seriesId_]?.[chIdx_];
-  const bEl=document.getElementById('reader-body');if(bEl)bEl.innerHTML=txt?txt.split('\n\n').map(p=>`<p>${p.replace(/\n/g,'<br/>')}</p>`).join(''):'<p style="color:var(--text-muted);text-align:center;padding:40px 0">Content coming soon...</p>';
+  const bEl=document.getElementById('reader-body');if(bEl)bEl.innerHTML=txt?txt.split('\n\n').map(p=>`<p>${p.replace(/\n/g,'<br/>')}</p>`).join(''):genComicMock(ch?ch.title:'');
   const pv=document.getElementById('prev-ch-btn');if(pv)pv.disabled=(chIdx_===0);
   const nx=document.getElementById('next-ch-btn');if(nx)nx.disabled=(chIdx_>=(b.chapters?.length||1)-1);
 }
@@ -4879,17 +5039,9 @@ enter();
 </div>
 <!-- ===================== SERIES DETAIL PAGE (MANGA/COMICS) ===================== -->
 <div id="page-series-detail" class="page">
-  <div class="series-topbar">
-    <div class="icon-btn" onclick="goBackFromSeries()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-    </div>
-    <div style="flex:1"></div>
-    <div class="icon-btn" id="series-bookmark-btn" onclick="toggleSeriesBookmark()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-    </div>
-    <div class="icon-btn" onclick="shareBook(currentComicSeries?.id)">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-    </div>
+  <div class="topbar-back-series" onclick="goBackFromSeries()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Back
   </div>
   
   <div class="series-banner">
@@ -4898,94 +5050,124 @@ enter();
   </div>
 
   <div class="series-content">
-    <div class="series-header-info">
+    <div class="series-header-grid">
       <img id="series-cover-img" src="" alt="Cover" class="series-cover" loading="lazy">
-      <div class="series-meta-main">
-        <h1 id="series-title" style="font-size:22px; font-weight:900; line-height:1.2; margin-bottom:4px; color:var(--text-primary);"></h1>
-        <div id="series-alt-title" style="font-size:13px; color:var(--text-secondary); margin-bottom:12px; line-height:1.3;"></div>
-        <div style="font-size:14px; color:var(--accent-2); font-weight:700; margin-bottom:12px;" id="series-author"></div>
-        <div class="series-stats" style="display:flex; gap:16px; font-size:12px; color:var(--text-muted); font-weight:600;">
-          <div>⭐ <span id="series-rating"></span></div>
-          <div>👁️ <span id="series-views"></span></div>
-          <div id="series-year"></div>
+      <div class="series-info">
+        <h1 id="series-title" class="series-title"></h1>
+        <div id="series-alt-title" class="series-alt-title"></div>
+        <div class="series-meta">
+          <div class="series-meta-item">✍️ <span id="series-author"></span></div>
+          <div class="series-meta-item rating">⭐ <span id="series-rating"></span></div>
+          <div class="series-meta-item">👁️ <span id="series-views"></span></div>
+          <div class="series-meta-item">📅 <span id="series-year"></span></div>
+        </div>
+        <div class="series-tags" id="series-tags"></div>
+        <div class="series-actions">
+          <button class="series-btn read" onclick="readFirstOrLatestChapter()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M5 3C3.89 3 3 3.89 3 5V19C3 20.11 3.89 21 5 21H19C20.11 21 21 20.11 21 19V5C21 3.89 20.11 3 19 3H5ZM8 17L17 12L8 7V17Z"/></svg>
+            Read Now
+          </button>
+          <button class="series-btn bookmark" id="series-bookmark-btn" onclick="toggleSeriesBookmark()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            Save
+          </button>
+          <button class="series-btn bookmark" style="min-width:48px; padding:0 16px;" onclick="shareBook(currentComicSeries?.id)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </button>
         </div>
       </div>
     </div>
 
-    <div class="series-actions" style="display:flex; gap:12px; margin-top:24px;">
-      <button class="btn-primary" style="flex:1; padding:14px; font-size:16px;" onclick="readFirstOrLatestChapter()">Read Now</button>
-      <button class="btn-outline" style="padding:14px; width:48px; border-color:var(--border); display:flex; align-items:center; justify-content:center;" onclick="showToast('Added to library!')">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-    </div>
-
-    <div style="margin-top:24px; display:flex; justify-content:space-between; align-items:center;">
-      <div style="font-weight:800; color:var(--text-primary);">Status: <span id="series-status" style="color:#10b981;"></span></div>
-      <div class="cat-chips" id="series-tags" style="gap:8px; margin:0;"></div>
-    </div>
-
-    <div style="margin-top:24px;">
-      <div style="font-weight:800; font-size:18px; margin-bottom:10px; color:var(--text-primary);">Synopsis</div>
-      <div id="series-desc" style="font-size:14px; line-height:1.6; color:var(--text-secondary);"></div>
-    </div>
-
-    <div style="margin-top:32px; padding-bottom:100px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-        <div style="font-weight:800; font-size:18px; color:var(--text-primary);">Chapters</div>
-        <div style="font-size:13px; font-weight:700; color:var(--text-secondary);" id="series-chapter-count"></div>
+    <div class="series-layout-grid">
+      <div>
+        <div class="series-section">
+          <div class="series-section-title">Synopsis</div>
+          <div id="series-desc" class="series-desc"></div>
+        </div>
+        
+        <div class="series-section" style="padding:0; background:transparent; border:none; box-shadow:none; backdrop-filter:none;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <div class="series-section-title" style="margin:0;">Chapters</div>
+            <div style="font-size:14px; font-weight:800; color:var(--accent-2); background:rgba(124,58,237,0.1); padding:6px 14px; border-radius:99px;" id="series-chapter-count"></div>
+          </div>
+          <div class="chapter-list" id="series-chapter-list">
+            <!-- Chapters injected here -->
+          </div>
+        </div>
       </div>
-      <div class="chapter-list" id="series-chapter-list" style="display:flex; flex-direction:column; gap:10px;">
-        <!-- Chapters injected here -->
-      </div>
+      
+
     </div>
   </div>
 </div>
 
 <!-- ===================== COMIC READER PAGE ===================== -->
-<div id="page-comic-reader" class="page" style="background:#000;">
-  <div class="comic-reader-top" id="comic-reader-top">
-    <div class="icon-btn" onclick="showPage('series-detail')" style="color:#fff;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
-    </div>
-    <div class="comic-reader-title" id="comic-reader-title" style="flex:1; text-align:center; color:#fff; font-weight:700; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; padding:0 10px;"></div>
-    <div class="icon-btn" onclick="toggleComicSettings()" style="color:#fff;">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-    </div>
+<div id="page-comic-reader" class="page">
+  <div class="comic-topbar" id="comic-reader-top">
+    <button class="comic-action-btn" onclick="closeComicReader()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="comic-reader-title" id="comic-reader-title"></div>
+    <button class="comic-action-btn" onclick="toggleComicSettings()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
   </div>
 
-  <div class="comic-content vertical" id="comic-content" onclick="toggleComicUi()">
+  <div class="comic-content vertical fullscreen" id="comic-content" onscroll="handleComicScroll()">
     <!-- Images injected here -->
   </div>
 
-  <div class="comic-reader-bottom" id="comic-reader-bottom">
-    <div style="display:flex; justify-content:space-between; align-items:center; max-width:500px; margin:0 auto; width:100%;">
-      <button class="icon-btn" onclick="prevComicChapter()" id="comic-prev-ch" style="color:#fff;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg>
-      </button>
-      <div style="color:#aaa; font-size:12px; font-weight:600;" id="comic-progress-text">Page 1 / ?</div>
-      <button class="icon-btn" onclick="nextComicChapter()" id="comic-next-ch" style="color:#fff;">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 17l5-5-5-5M6 17l5-5-5-5"/></svg>
-      </button>
+  <!-- Invisible tap zones for mobile -->
+  <div class="comic-tap-zone comic-tap-left" onclick="comicTapLeft()"></div>
+  <div class="comic-tap-zone comic-tap-center" onclick="toggleComicUI()"></div>
+  <div class="comic-tap-zone comic-tap-right" onclick="comicTapRight()"></div>
+
+  <div class="comic-bottombar" id="comic-reader-bottom" style="gap:10px; padding:0 16px;">
+    <button class="comic-action-btn" onclick="prevComicChapter()" id="comic-prev-ch" title="Previous Chapter">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    </button>
+    <button class="comic-action-btn" onclick="prevComicPage()" title="Previous Page">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="comic-progress-container" style="flex:1; max-width:300px;">
+      <div class="comic-progress-text" id="comic-progress-text">Loading...</div>
+      <div class="comic-progress-track" onclick="seekComicProgress(event)">
+        <div class="comic-progress-fill" id="comic-progress-fill"></div>
+      </div>
     </div>
+    <button class="comic-action-btn" onclick="nextComicPage()" title="Next Page">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="comic-action-btn" onclick="nextComicChapter()" id="comic-next-ch" title="Next Chapter">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </button>
   </div>
 
   <div class="comic-settings-panel" id="comic-settings-panel">
-    <div style="font-weight:700; color:#fff; margin-bottom:16px;">Reader Settings</div>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-      <span style="color:#aaa; font-size:14px;">Reading Direction</span>
-      <select id="comic-dir-select" onchange="setComicDirection(this.value)" style="background:#222; color:#fff; border:1px solid #444; padding:6px 10px; border-radius:6px; outline:none;">
-        <option value="vertical">Vertical Scroll</option>
-        <option value="ltr">Left to Right</option>
-        <option value="rtl">Right to Left (Manga)</option>
-      </select>
+    <div style="font-size:18px; font-weight:900; color:white; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:16px;">Reader Settings</div>
+    
+    <div>
+      <div class="comic-setting-label" style="margin-bottom:12px;">Reading Direction</div>
+      <div class="comic-dir-group">
+        <div class="comic-dir-btn active" id="btn-dir-vertical" onclick="setComicDirection('vertical')">Vertical Scroll</div>
+        <div class="comic-dir-btn" id="btn-dir-ltr" onclick="setComicDirection('ltr')">Left-to-Right</div>
+        <div class="comic-dir-btn" id="btn-dir-rtl" onclick="setComicDirection('rtl')">Right-to-Left</div>
+      </div>
     </div>
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span style="color:#aaa; font-size:14px;">Fit to Width</span>
-      <div class="toggle on" id="comic-fit-toggle" onclick="toggleComicFit()"></div>
+
+    <div class="comic-setting-row" style="padding-top:8px; border-top:1px solid rgba(255,255,255,0.05);">
+      <span class="comic-setting-label">Fit to Width</span>
+      <div class="toggle on" id="comic-fit-toggle" onclick="toggleComicFit()" style="border-color:rgba(255,255,255,0.2);"></div>
+    </div>
+    
+    <div class="comic-setting-row">
+      <span class="comic-setting-label">Auto-hide UI</span>
+      <div class="toggle on" id="comic-autohide-toggle" onclick="toggleComicAutoHide()" style="border-color:rgba(255,255,255,0.2);"></div>
     </div>
   </div>
 </div>
 
+<!-- Admin HTML inserted by script -->
 <!-- Admin HTML inserted by script -->
 <div id="page-admin" class="page">
   <div class="adm-top">
@@ -5057,7 +5239,7 @@ enter();
         <div class="adm-sett-grid">
           <div class="adm-sett-card">
             <div class="adm-sett-card-title">Admin Credentials</div>
-            <div class="adm-form-row"><label class="adm-lbl">Admin Email</label><input class="adm-inp" value="admin@Bangla Scan.io" readonly></div>
+            <div class="adm-form-row"><label class="adm-lbl">Admin Email</label><input class="adm-inp" value="admin@banglascan.com" readonly></div>
             <div class="adm-form-row"><label class="adm-lbl">New Password</label><input class="adm-inp" type="password" id="adm-pw-inp" placeholder="New password"></div>
             <div class="adm-form-row"><label class="adm-lbl">Confirm</label><input class="adm-inp" type="password" id="adm-pw2-inp" placeholder="Confirm password"></div>
             <button class="adm-save" onclick="admChangePassword()">Save Password</button>
@@ -6033,12 +6215,13 @@ let currentComicChapterIdx = 0;
 let comicDirection = 'vertical';
 let comicFit = true;
 let comicUiVisible = true;
+let comicAutoHide = false;
+let comicImagesLoaded = 0;
+let totalComicImages = 0;
+let scrollTimeout;
 
-// ===== MANGA RENDERING FUNCTIONS (already defined in main script block above) =====
-// Kept here as stubs to prevent duplicate-definition errors if script reloads
 function goBackFromSeries() {
     showPage('dashboard');
-    navTo('manga');
 }
 
 function openSeries(id) {
@@ -6054,19 +6237,19 @@ function openSeries(id) {
     document.getElementById('series-rating').innerText = series.rating || "N/A";
     document.getElementById('series-views').innerText = series.views || Math.floor(Math.random()*100000);
     document.getElementById('series-year').innerText = series.year || "2026";
-    document.getElementById('series-status').innerText = series.status === 'completed' ? 'Completed' : 'Ongoing';
     document.getElementById('series-desc').innerHTML = series.description || "No description available.";
     
-    // tags
     const tagsDiv = document.getElementById('series-tags');
-    tagsDiv.innerHTML = `<span class="cat-chip">${series.genre}</span>`;
+    let statusColor = series.status === 'completed' ? '#10b981' : '#f59e0b';
+    let statusText = series.status === 'completed' ? 'Completed' : 'Ongoing';
+    tagsDiv.innerHTML = `<span class="cat-chip" style="background:transparent; color:${statusColor}; border:1px solid ${statusColor}; font-weight:bold; text-transform:uppercase; letter-spacing:1px; font-size:10px;">${statusText}</span>`;
+    tagsDiv.innerHTML += `<span class="cat-chip" style="background:var(--gradient-accent);color:white;border:none;">${series.genre}</span>`;
     if (series.tags) {
         series.tags.forEach(t => {
-            tagsDiv.innerHTML += `<span class="cat-chip">${t}</span>`;
+            tagsDiv.innerHTML += `<span class="cat-chip" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);">${t}</span>`;
         });
     }
 
-    // chapters
     const chList = document.getElementById('series-chapter-list');
     chList.innerHTML = '';
     const chapters = series.chapters || [];
@@ -6079,7 +6262,7 @@ function openSeries(id) {
                 <span class="chapter-num">Chapter ${idx+1}: ${ch.title}</span>
                 <span class="chapter-date">${ch.date || 'Just now'}</span>
             </div>
-            ${ch.done ? '<span class="chapter-item-right" style="background:transparent;color:var(--text-muted)">Read</span>' : '<span class="chapter-item-right">Unread</span>'}
+            ${ch.done ? '<span class="chapter-item-right" style="background:transparent;color:var(--text-muted);border-color:var(--border);">Read</span>' : '<span class="chapter-item-right">Read</span>'}
         </div>`;
     });
 
@@ -6094,21 +6277,25 @@ function readFirstOrLatestChapter() {
 
 function openComicChapter(idx) {
     if(!currentComicSeries) return;
-    currentComicSeries.currentChapter = idx;
     const chapters = currentComicSeries.chapters || [];
     if(idx < 0 || idx >= chapters.length) return;
+    
+    currentComicSeries.currentChapter = idx;
     currentComicChapterIdx = idx;
+    
     if(chapters[idx]) { chapters[idx].done = true; saveManga(); }
     
     document.getElementById('comic-reader-title').innerText = currentComicSeries.title + " - Chapter " + (idx+1);
     
-    // If it's a comic (Manga/Manhwa/Manhua/Comic), render images
+    if(document.getElementById('comic-prev-ch')) document.getElementById('comic-prev-ch').disabled = (idx === 0);
+    if(document.getElementById('comic-next-ch')) document.getElementById('comic-next-ch').disabled = (idx === chapters.length - 1);
+    
     const isComic = ['Manga', 'Manhwa', 'Manhua', 'Comic'].includes(currentComicSeries.genre);
     if(isComic) {
         renderComicImages();
         showPage('comic-reader');
+        /* initial auto-hide removed */
     } else {
-        // Fallback to text reader for novels
         loadReader(currentComicSeries.id, idx);
         showPage('comic-reader');
     }
@@ -6117,26 +6304,74 @@ function openComicChapter(idx) {
 function renderComicImages() {
     const content = document.getElementById('comic-content');
     content.innerHTML = '';
+    content.scrollTo(0,0);
     
-    // Mock images for demonstration
-    const images = currentComicSeries.chapters[currentComicChapterIdx].images || [
-        currentComicSeries.cover,
-        currentComicSeries.cover,
-        currentComicSeries.cover
-    ];
+    comicImagesLoaded = 0;
     
-    const progressEl = document.getElementById('comic-progress-text');
-    if(progressEl) progressEl.innerText = `1 / ${images.length}`;
+    let images = currentComicSeries.chapters[currentComicChapterIdx].images;
+    if(!images || images.length === 0) {
+        images = Array(15).fill(currentComicSeries.cover);
+    }
+    totalComicImages = images.length;
     
-    images.forEach((src, i) => {
-        const img = document.createElement('img');
-        img.src = src;
-        img.className = 'comic-page loaded';
-        img.loading = 'lazy';
-        content.appendChild(img);
-    });
+    updateComicProgressText(1, totalComicImages);
     
-    applyComicSettings();
+    for(let i=0; i<3; i++) {
+        content.innerHTML += `<div class="comic-skeleton"></div>`;
+    }
+    
+    setTimeout(() => {
+        content.innerHTML = '';
+        content.scrollTo(0,0);
+        window.scrollTo(0,0);
+        images.forEach((src, i) => {
+            const img = document.createElement('img');
+            img.dataset.src = src;
+            img.dataset.idx = i + 1;
+            img.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E"; 
+            img.className = 'comic-page';
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        const tgt = entry.target;
+                        if(!tgt.classList.contains('loaded')) {
+                            tgt.src = tgt.dataset.src;
+                            tgt.onload = () => tgt.classList.add('loaded');
+                        }
+                        updateComicProgressText(tgt.dataset.idx, totalComicImages);
+                    }
+                });
+            }, { root: content, threshold: 0.1 });
+            
+            observer.observe(img);
+            content.appendChild(img);
+        });
+        
+        const isLast = currentComicChapterIdx === (currentComicSeries.chapters.length - 1);
+        content.innerHTML += `
+            <div class="comic-chapter-end">
+                <div class="comic-end-title">${isLast ? "Series Completed!" : "Chapter Completed"}</div>
+                <div class="comic-end-msg">${isLast ? "You\'ve read all available chapters." : "Ready for the next chapter?"}</div>
+                ${!isLast ? `<div style="display:flex; gap:16px; margin-top:16px; flex-wrap:wrap; justify-content:center;">
+                    ${currentComicChapterIdx > 0 ? `<button class="comic-next-btn-large" style="background:rgba(255,255,255,0.05); color:white; box-shadow:none;" onclick="prevComicChapter()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg> Prev Chapter</button>` : ''}
+                    ${!isLast ? `<button class="comic-next-btn-large" onclick="nextComicChapter()">Next Chapter <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>` : ''}
+                </div>` : ''}
+            </div>
+        `;
+        
+        applyComicSettings();
+    }, 500);
+}
+
+function updateComicProgressText(current, total) {
+    const el = document.getElementById('comic-progress-text');
+    const fill = document.getElementById('comic-progress-fill');
+    if(el) el.innerText = `PAGE ${current} / ${total}`;
+    if(fill) fill.style.width = `${(current/total)*100}%`;
+}
+
+function handleComicScroll() { /* disabled scroll hide for better UX */
 }
 
 function closeComicReader() {
@@ -6150,6 +6385,10 @@ function toggleComicSettings() {
 
 function setComicDirection(dir) {
     comicDirection = dir;
+    ['vertical','ltr','rtl'].forEach(d => {
+        document.getElementById('btn-dir-'+d)?.classList.remove('active');
+    });
+    document.getElementById('btn-dir-'+dir)?.classList.add('active');
     applyComicSettings();
 }
 
@@ -6161,6 +6400,13 @@ function toggleComicFit() {
     applyComicSettings();
 }
 
+function toggleComicAutoHide() {
+    const el = document.getElementById('comic-autohide-toggle');
+    if(!el) return;
+    el.classList.toggle('on');
+    comicAutoHide = el.classList.contains('on');
+}
+
 function applyComicSettings() {
     const content = document.getElementById('comic-content');
     content.className = 'comic-content' + (!comicFit ? ' fullscreen' : '');
@@ -6168,20 +6414,18 @@ function applyComicSettings() {
     if(comicDirection === 'ltr') {
         content.classList.add('comic-mode-h');
     } else if(comicDirection === 'rtl') {
-        content.classList.add('comic-mode-h');
-        content.classList.add('comic-mode-rtl');
+        content.classList.add('comic-mode-h', 'comic-mode-rtl');
     }
 }
 
 function toggleComicUI() {
     comicUiVisible = !comicUiVisible;
-    if(comicUiVisible) {
-        document.getElementById('comic-topbar').classList.remove('hidden');
-        document.getElementById('comic-bottombar').classList.remove('hidden');
-    } else {
-        document.getElementById('comic-topbar').classList.add('hidden');
-        document.getElementById('comic-bottombar').classList.add('hidden');
-        document.getElementById('comic-settings').classList.remove('open');
+    const top = document.getElementById('comic-reader-top');
+    const bot = document.getElementById('comic-reader-bottom');
+    if(top) top.classList.toggle('hidden', !comicUiVisible);
+    if(bot) bot.classList.toggle('hidden', !comicUiVisible);
+    if(!comicUiVisible) {
+        document.getElementById('comic-settings-panel')?.classList.remove('open');
     }
 }
 
@@ -6196,17 +6440,32 @@ function comicTapRight() {
 }
 
 function nextComicPage() {
-    if(comicDirection === 'vertical') { window.scrollBy({top: window.innerHeight*0.8, behavior:'smooth'}); return; }
-    document.getElementById('comic-content').scrollBy({left: window.innerWidth, behavior:'smooth'});
+    const c = document.getElementById('comic-content');
+    if(comicDirection === 'vertical') { c.scrollBy({top: c.clientHeight*0.8, behavior:'smooth'}); }
+    else { c.scrollBy({left: c.clientWidth, behavior:'smooth'}); }
 }
 
 function prevComicPage() {
-    if(comicDirection === 'vertical') { window.scrollBy({top: -window.innerHeight*0.8, behavior:'smooth'}); return; }
-    document.getElementById('comic-content').scrollBy({left: -window.innerWidth, behavior:'smooth'});
+    const c = document.getElementById('comic-content');
+    if(comicDirection === 'vertical') { c.scrollBy({top: -c.clientHeight*0.8, behavior:'smooth'}); }
+    else { c.scrollBy({left: -c.clientWidth, behavior:'smooth'}); }
 }
 
 function nextComicChapter() { openComicChapter(currentComicChapterIdx + 1); }
 function prevComicChapter() { openComicChapter(currentComicChapterIdx - 1); }
+
+function seekComicProgress(e) {
+    const track = e.currentTarget;
+    const rect = track.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const targetIdx = Math.max(0, Math.floor(percent * totalComicImages));
+    
+    const content = document.getElementById('comic-content');
+    const images = content.querySelectorAll('.comic-page');
+    if(images[targetIdx]) {
+        images[targetIdx].scrollIntoView({behavior: 'smooth', block: 'start'});
+    }
+}
 
 function toggleSeriesBookmark() {
     const btn = document.getElementById('series-bookmark-btn');
@@ -6219,5 +6478,6 @@ document.addEventListener('DOMContentLoaded', function() {
   enter();
 });
 </script>
+<script src="admin-api.js"></script>
 </body>
 </html>
