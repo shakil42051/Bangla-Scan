@@ -1,0 +1,13 @@
+import { mkdir, copyFile, cp, stat, readdir } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const output = path.join(root, 'frontend', 'dist');
+await mkdir(output, { recursive: true });
+for (const file of ['index.html', 'manifest.json', 'sw.js', 'bangla_scan_logo.svg']) await copyFile(path.join(root, file), path.join(output, file));
+await cp(path.join(root, 'assets'), path.join(output, 'assets'), { recursive: true });
+const files = ['index.html', 'manifest.json', 'sw.js', 'bangla_scan_logo.svg', ...(await readdir(path.join(output, 'assets'))).map(file => 'assets/' + file)];
+const entries = await Promise.all(files.map(async file => ({ file, size: (await stat(path.join(output, file))).size })));
+const size = entries.reduce((sum, info) => sum + info.size, 0);
+const code = entries.filter(info => !info.file.endsWith('.webp')).reduce((sum, info) => sum + info.size, 0);
+console.log(`Built ${files.length} files: ${Math.round(code / 1024)} KB code + ${Math.round((size - code) / 1024)} KB optimized artwork in frontend/dist. No external fonts or CDN scripts required.`);

@@ -1,0 +1,11 @@
+import { readdir, readFile } from 'node:fs/promises';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+if (ids.length !== new Set(ids).size) throw new Error('Duplicate HTML IDs found.');
+if (/on(?:click|input|submit|error)=|<script(?![^>]*src=)/i.test(html)) throw new Error('Inline executable HTML found.');
+JSON.parse(await readFile(new URL('../manifest.json', import.meta.url), 'utf8'));
+for (const folder of ['assets', 'scripts']) for (const file of await readdir(new URL('../' + folder, import.meta.url))) if (file.endsWith('.mjs')) execFileSync(process.execPath, ['--check', `${folder}/${file}`], { cwd: root, stdio: 'pipe' });
+console.log('JavaScript syntax, unique IDs, manifest, and external-script checks passed.');
