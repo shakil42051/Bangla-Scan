@@ -65,10 +65,13 @@ const seriesSchema = new mongoose.Schema({
 
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
   updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin' },
-}, { timestamps: true });
+}, { timestamps: true, autoIndex: false });
 
 // ── Indexes ──────────────────────────────────────────────────────────────────
-seriesSchema.index({ title: 'text', alternativeTitles: 'text', description: 'text' });
+// Content language codes (including bn) are metadata, not MongoDB text analyzers.
+seriesSchema.index({ title: 'text', alternativeTitles: 'text', description: 'text' }, {
+  default_language: 'none', language_override: 'textSearchLanguage',
+});
 seriesSchema.index({ visibility: 1, type: 1, status: 1 });
 seriesSchema.index({ views: -1 });
 seriesSchema.index({ rating: -1 });
