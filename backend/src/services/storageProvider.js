@@ -7,6 +7,7 @@ async function upload(buffer, name, mimeType, folder) {
   if (driver === 's3') return s3.upload(buffer, mimeType);
   if (driver === 'drive') return require('./driveManager').upload(buffer, name, mimeType, folder);
   if (driver !== 'local') throw new Error('Unknown storage provider.');
+  if (process.env.REQUIRE_PERSISTENT_MEDIA === 'true') throw require('../utils/http').fail(503, 'Server-local uploads are disabled on this host. Select configured cloud storage in Content studio.');
   return local.upload(buffer);
 }
 async function read(fileId, driveId) {
