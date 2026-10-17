@@ -1,0 +1,53 @@
+services:
+  - type: web
+    name: bangla-scan
+    runtime: node
+    plan: free
+    buildCommand: npm --prefix backend ci --omit=dev
+    startCommand: node backend/src/hosted.js
+    healthCheckPath: /ready
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: NODE_ENV
+        value: production
+      - key: HOST
+        value: 0.0.0.0
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: BOOTSTRAP_ADMIN
+        value: "true"
+      - key: STORAGE_DRIVER
+        value: s3
+      - key: REQUIRE_PERSISTENT_MEDIA
+        value: "true"
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: AUTH_ENCRYPTION_KEY
+        generateValue: true
+      - key: STORAGE_ENCRYPTION_KEY
+        generateValue: true
+      - key: MONGODB_URI
+        sync: false
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: S3_BUCKET
+        value: bangla-scan-media
+      - key: S3_ENDPOINT
+        sync: false
+      - key: S3_REGION
+        sync: false
+      - key: S3_ACCESS_KEY_ID
+        sync: false
+      - key: S3_SECRET_ACCESS_KEY
+        sync: false
+      - key: S3_FORCE_PATH_STYLE
+        value: "true"
+      - key: S3_PREFIX
+        value: bangla-scan/
+      - key: MAX_FILE_SIZE_MB
+        value: "5"
