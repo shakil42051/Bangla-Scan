@@ -1,0 +1,18 @@
+{
+  "name": "bangla-scan",
+  "private": true,
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "start": "npm --prefix backend start",
+    "build": "node scripts/check.mjs && node scripts/build.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "check": "node scripts/check.mjs",
+    "local": "node scripts/local.mjs",
+    "test:integration": "node scripts/integration.mjs",
+    "test:auth": "node scripts/auth-integration.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
