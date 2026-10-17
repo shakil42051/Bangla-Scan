@@ -51,10 +51,10 @@ app.use(cors({
     const ownOrigin = `http://localhost:${process.env.PORT || 5000}`;
     if (process.env.NODE_ENV !== 'production' && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)) return callback(null, true);
     if (origin === ownOrigin) return callback(null, true);
-    
+
     const allowedOrigins = (process.env.CLIENT_URL || '').split(',').map(o => o.trim());
     if (allowedOrigins.includes(origin)) return callback(null, true);
-    
+
     return callback(Object.assign(new Error('Not allowed by CORS'), { statusCode: 403 }));
   },
   credentials: true,
@@ -163,7 +163,7 @@ async function start() {
     throw new Error('Configure distinct JWT_SECRET and JWT_REFRESH_SECRET values of at least 32 characters.');
   }
   await connectDB();
-  if (process.env.BOOTSTRAP_LOCAL_ADMIN === 'true') await require('./services/seedData')();
+  if (process.env.BOOTSTRAP_ADMIN === 'true' || process.env.BOOTSTRAP_LOCAL_ADMIN === 'true') await require('./services/seedData')();
   if (process.env.STORAGE_DRIVER === 'drive') await DriveManager.initializeAll();
   const jobs = initCrons();
   let server;

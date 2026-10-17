@@ -24,6 +24,15 @@ async function call(route, { token, cookie, body, method = 'GET' } = {}) {
 const form = (fields, data, name = 'image.webp', field = 'file') => { const value = new FormData(); for (const [k, v] of Object.entries(fields)) value.set(k, v); const type = /\.(cbz|zip)$/i.test(name) ? 'application/zip' : name.endsWith('.png') ? 'image/png' : 'image/webp'; value.set(field, new Blob([data], { type }), name); return value; };
 try {
   await mongoose.connect(uri); const app = require('../backend/src/server');
+  const Series = require('../backend/src/models/Series');
+  await Series.createCollection();
+  await Series.collection.createIndex({ title: 'text', alternativeTitles: 'text', description: 'text' });
+  const legacy = await Series.create({ title: 'Existing English catalog', language: 'en' });
+  await require('../backend/src/services/seriesIndexes')();
+  assert.ok(await Series.exists({ _id: legacy._id }));
+  await require('../backend/src/services/seriesIndexes')();
+  await Series.deleteOne({ _id: legacy._id });
+  record('legacy search index migration preserves catalog documents and is repeatable');
   await Promise.all(Object.values(mongoose.models).map(model => model.init()));
   server = await new Promise(resolve => { const running = app.listen(0, '127.0.0.1', () => resolve(running)); }); origin = 'http://127.0.0.1:' + server.address().port;
   const Admin = require('../backend/src/models/Admin'); const Upload = require('../backend/src/models/Upload');
@@ -32,7 +41,13 @@ try {
   const login = await call('/api/auth/admin/login', { method: 'POST', body: { email: 'owner@example.invalid', password } }); assert.equal(login.status, 200); assert.ok(login.cookie); const token = login.data.data.accessToken; const adminCookie = login.cookie;
   record('real administrator login and protected image session');
   const source = await readFile(path.join(root, 'assets/cover-shadow.webp')); const second = await readFile(path.join(root, 'assets/cover-lotus.webp'));
-  const made = await call('/api/series', { method: 'POST', token, body: { title: 'Integration Manga', type: 'manga', visibility: 'draft', status: 'ongoing', description: 'Disposable integration catalog.' } }); assert.equal(made.status, 201); const series = made.data.data;
+  const made = await call('/api/series', { method: 'POST', token, body: { title: 'Integration Manga', type: 'manga', language: 'bn', visibility: 'draft', status: 'ongoing', description: 'Disposable integration catalog.' } }); assert.equal(made.status, 201); const series = made.data.data;
+  assert.equal(series.language, 'bn');
+  assert.ok(await Series.exists({ $text: { $search: 'Integration' } }));
+  const bangla = await Series.create({ title: 'বাংলা কমিক্স', description: 'মাঙ্গা অভিযান', language: 'bn' });
+  assert.ok(await Series.exists({ _id: bangla._id, $text: { $search: 'অভিযান' } }));
+  await Series.deleteOne({ _id: bangla._id });
+  record('Bangla series metadata saves and Bangla text search finds indexed content');
   const ch = await call('/api/chapters', { method: 'POST', token, body: { seriesId: series._id, chapterNumber: 1, visibility: 'draft', title: 'Uploaded panels' } }); assert.equal(ch.status, 201); const chapter = ch.data.data;
   assert.equal((await call('/api/chapters', { method: 'POST', token, body: { seriesId: series._id, chapterNumber: 3, pages: { fileId: 'injected-file', url: 'https://example.invalid/image.png' } } })).status, 400);
   assert.equal((await call('/api/chapters/' + chapter._id, { method: 'PUT', token, body: { visibility: 'public' } })).status, 400);

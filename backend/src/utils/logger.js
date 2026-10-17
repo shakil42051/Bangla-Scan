@@ -16,18 +16,10 @@ const logger = createLogger({
   ),
   defaultMeta: { service: 'bangla-scan-api' },
   transports: [
+    new transports.Console(),
     new transports.File({ filename: path.join(logsDir, 'error.log'), level: 'error', maxsize: 5242880, maxFiles: 5 }),
     new transports.File({ filename: path.join(logsDir, 'combined.log'), maxsize: 5242880, maxFiles: 5 }),
   ],
 });
-
-if (process.env.NODE_ENV !== 'production') {
-  logger.add(new transports.Console({
-    format: format.combine(
-      format.colorize(),
-      format.simple()
-    ),
-  }));
-}
 
 module.exports = logger;
