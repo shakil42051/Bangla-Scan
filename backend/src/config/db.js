@@ -19,6 +19,7 @@ const connectDB = async () => {
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
     });
+    await require('../services/seriesIndexes')();
     isConnected = true;
     logger.info(`✅ MongoDB connected: ${conn.connection.host}`);
 
