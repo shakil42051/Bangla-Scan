@@ -1,0 +1,62 @@
+services:
+  mongodb:
+    image: mongo:7
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: bangla_owner
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_ROOT_PASSWORD:?Set a random hex MongoDB root password}
+      MONGO_APP_PASSWORD: ${MONGO_APP_PASSWORD:?Set a different random hex application database password}
+    volumes:
+      - bangla-scan-data:/data/db
+      - ./backend/mongo-init.js:/docker-entrypoint-initdb.d/01-create-user.js:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    ports:
+      - "127.0.0.1:5000:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      HOST: 0.0.0.0
+      STORAGE_DRIVER: ${STORAGE_DRIVER:-local}
+      MEDIA_DIRECTORY: /app/backend/data/media
+      MONGODB_URI: mongodb://bangla_scan:${MONGO_APP_PASSWORD:?Set a random hex application database password}@mongodb:27017/bangla_scan?authSource=bangla_scan
+      JWT_SECRET: ${JWT_SECRET:?Set a random JWT_SECRET of at least 32 characters}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?Set a distinct JWT_REFRESH_SECRET}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:5000}
+      CLIENT_URL: ${CLIENT_URL:-http://localhost:5000}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      S3_PROVIDER_LABEL: ${S3_PROVIDER_LABEL:-S3 compatible}
+      S3_BUCKET: ${S3_BUCKET:-}
+      S3_REGION: ${S3_REGION:-}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      S3_SESSION_TOKEN: ${S3_SESSION_TOKEN:-}
+      S3_PREFIX: ${S3_PREFIX:-bangla-scan/}
+      S3_FORCE_PATH_STYLE: ${S3_FORCE_PATH_STYLE:-false}
+      STORAGE_ENCRYPTION_KEY: ${STORAGE_ENCRYPTION_KEY:-}
+      TRUST_PROXY_HOPS: ${TRUST_PROXY_HOPS:-}
+      AUTH_ENCRYPTION_KEY: ${AUTH_ENCRYPTION_KEY:-}
+      AUTH_RATE_LIMIT_MAX: ${AUTH_RATE_LIMIT_MAX:-20}
+    volumes:
+      - bangla-scan-media:/app/backend/data/media
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  bangla-scan-data:
+  bangla-scan-media:

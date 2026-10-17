@@ -1,41 +1,14 @@
-const CACHE_NAME = 'banglascan-v1';
-const ASSETS = [
-  './',
-  './index.html',
-  'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&display=swap',
-  'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
-];
-
-// Install: cache all core assets
-self.addEventListener('install', e => {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return Promise.allSettled(ASSETS.map(url => cache.add(url).catch(() => {})));
-    }).then(() => self.skipWaiting())
-  );
-});
-
-// Activate: remove old caches
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    ).then(() => self.clients.claim())
-  );
-});
-
-// Fetch: serve from cache, fall back to network, cache new responses
-self.addEventListener('fetch', e => {
-  if (e.request.method !== 'GET') return;
-  e.respondWith(
-    caches.match(e.request).then(cached => {
-      if (cached) return cached;
-      return fetch(e.request).then(response => {
-        if (!response || response.status !== 200 || response.type === 'opaque') return response;
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(e.request, clone));
-        return response;
-      }).catch(() => caches.match('./index.html'));
-    })
-  );
+const CACHE = 'banglascan-shell-v7';
+const SHELL = ['/', '/assets/styles.css', '/assets/app.mjs', '/assets/api.mjs', '/assets/ui.mjs', '/assets/admin.mjs', '/assets/admin-extras.mjs', '/assets/media-admin.mjs', '/assets/storage-admin.mjs', '/assets/navigation.mjs', '/assets/preferences.mjs', '/assets/auth-ui.mjs', '/assets/settings-ui.mjs', '/assets/discovery.mjs', '/assets/account.mjs', '/assets/series.mjs', '/assets/reader.mjs', '/assets/manga-hero.webp', '/assets/cover-shadow.webp', '/assets/cover-lotus.webp', '/assets/cover-neon.webp', '/manifest.json', '/bangla_scan_logo.svg'];
+self.addEventListener('install', event => { event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting())); });
+self.addEventListener('activate', event => { event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key.startsWith('banglascan') && key !== CACHE).map(key => caches.delete(key)))).then(() => self.clients.claim())); });
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.startsWith('/api/') || request.headers.has('Authorization')) return;
+  if (!SHELL.includes(url.pathname)) return;
+  event.respondWith(fetch(request, { cache: 'no-cache' }).then(response => {
+    if (response.ok) { const copy = response.clone(); event.waitUntil(caches.open(CACHE).then(cache => cache.put(request, copy))); }
+    return response;
+  }).catch(async () => await caches.match(request) || (request.mode === 'navigate' ? await caches.match('/') : null) || new Response('Offline. Reconnect and try again.', { status: 503 })));
 });
